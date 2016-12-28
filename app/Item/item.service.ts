@@ -9,4 +9,9 @@ import {MenuItem} from "./Item.modal";
 export class ItemService{
     constructor(private _http:Http){}
     private _baseUrl = "http://"+Settings.serverHost+":"+Settings.serverPort+"/api/Item";
+
+    addItem(item : MenuItem) {
+        return this._http.post(this._baseUrl,item)
+            .map(res => res.json())
+    }
 }

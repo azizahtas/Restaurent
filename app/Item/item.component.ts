@@ -3,7 +3,6 @@ import {MenuItem} from "./item.modal";
 import {Message} from "../Shared/Message.modal";
 import {ItemService} from "./item.service";
 import * as _ from "lodash";
-import {FormBuilder, Validators, FormGroup, FormControl} from "@angular/forms";
 
 @Component({
     templateUrl: 'app/Item/item.component.html',
@@ -25,9 +24,8 @@ padding: 5px;
 `]
 })
 export class ItemComponent {
-    constructor(private fb : FormBuilder){}
+    constructor(){}
 
-     AddItemForm:FormGroup;
      menuItem : MenuItem;
     ngOnInit() {
         this.menuItem = new MenuItem();
@@ -57,7 +55,7 @@ export class ItemComponent {
 
         }
         else{
-            console.log("Duhhh!!")!
+
         }
     }
 
