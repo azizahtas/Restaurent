@@ -6,7 +6,7 @@ import {RouterModule} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 @NgModule({
-    imports : [BrowserModule,RouterModule,HttpModule],
+    imports : [BrowserModule,RouterModule,HttpModule,FormsModule,ReactiveFormsModule],
     declarations : [HeaderBarComponent,LeftNavComponent],
     exports : [BrowserModule,FormsModule,HttpModule,ReactiveFormsModule,RouterModule,HeaderBarComponent,LeftNavComponent]
 })
