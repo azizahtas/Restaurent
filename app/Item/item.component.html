@@ -16,6 +16,12 @@
                 <div class="block-web">
                     <div class="porlets-content">
                         <div class="row">
+                            <div class="col-md-12">
+                                <div *ngFor="let msg of messages" class="alert alert-{{msg.type}}">
+                                    <h2>{{msg.title}}</h2>
+                                    <h3>{{msg.message}}</h3>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <input class="form-control" type="text" placeholder="Search Here !!">
@@ -60,32 +66,34 @@
             </div>
             <div class="modal-body">
                 <div class="printable_4">
-                    <form #f="ngForm" (ngSubmit)="Save(false)" action="" class="form-horizontal row-border" novalidate>
+                    <form #f="ngForm" class="form-horizontal row-border" novalidate>
                         <div class="form-group" [ngClass]="{'has-error': !name.valid && !name.pristine && name.touched, 'has-success':name.valid}">
                             <label class="col-sm-3 control-label big">Name </label>
                             <div class="col-sm-8">
-                                <input #name="ngModel" name="name" [(ngModel)]="menuItem.Name" type="text" placeholder="Enter Dish Name" class="form-control big" required minlength="5">
+                                <input #name="ngModel" name="name" (keyup)="CheckName($event.target.value)" [(ngModel)]="menuItem.Name" type="text" placeholder="Enter Dish Name" class="form-control big" required minlength="5">
                             </div>
                             <div class="col-md-1">
-                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': name.valid && !name.pristine, 'fa-times':!name.valid && !name.pristine}"></i></p>
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': name.valid && !name.pristine && !checking_Name, 'fa-times':!name.valid && !name.pristine}"></i></p>
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-spinner fa-spin': checking_Name, 'fa-times fa-spin':checking_Name_Error}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="name.valid || (name.pristine)">
                                     Name is required (minimum 5 characters).
+                                </div>
+                                <div class="alert alert-danger big err" [hidden]="!checking_Name_Error">
+                                   Menu Item Already Present!!
                                 </div>
                             </div>
                         </div>
                         <div class="form-group" [ngClass]="{'has-error': !phalf.valid && !phalf.pristine, 'has-success':name.valid}">
                             <label class="col-sm-3 control-label big">Half Price </label>
                             <div class="col-sm-8">
-                                <input #phalf="ngModel" name="phalf" value="" [(ngModel)]="menuItem.PHalf" type="number" placeholder="Enter Half Plate Rate" class="form-control big" required min="1">
+                                <input #phalf="ngModel" name="phalf" value="" [(ngModel)]="menuItem.HPrice" type="number" placeholder="Enter Half Plate Rate" class="form-control big" required min="1">
                             </div>
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': phalf.valid && !phalf.pristine, 'fa-times':!phalf.valid && !phalf.pristine}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="phalf.valid || (phalf.pristine)">
                                     Half Place Price is required (minimum 1 Rupees).
                                 </div>
@@ -94,13 +102,12 @@
                         <div class="form-group" [ngClass]="{'has-error': !pfull.valid && !pfull.pristine, 'has-success':name.valid}">
                             <label class="col-sm-3 control-label big">Full Price </label>
                             <div class="col-sm-8">
-                                <input #pfull="ngModel" name="pfull" [(ngModel)]="menuItem.PFull" type="number" placeholder="Enter Full Plate Rate" class="form-control big" required min="1">
+                                <input #pfull="ngModel" name="pfull" [(ngModel)]="menuItem.FPrice" type="number" placeholder="Enter Full Plate Rate" class="form-control big" required min="1">
                             </div>
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': pfull.valid && !pfull.pristine, 'fa-times':!pfull.valid && !pfull.pristine}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="pfull.valid || (pfull.pristine)">
                                     Full Place Price is required (minimum 1 Rupees).
                                 </div>
@@ -114,8 +121,7 @@
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': img.valid && !img.pristine, 'fa-times':!img.valid && !img.pristine}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="img.valid || (img.pristine)">
                                     Image Url Is Required.
                                 </div>
@@ -125,15 +131,14 @@
                             <label class="col-sm-3 control-label big">Category </label>
                             <div class="col-sm-8">
                                 <select #category="ngModel" name="category" [(ngModel)]="menuItem.Category" class="form-control big" required>
-                                    <option value=""></option>
-                                    <option value="One"> Duhh</option>
+                                    <option value="">Select A Category</option>
+                                    <option *ngFor="let cat of categories" [value]="cat.Name">{{cat.Name}}</option>
                                 </select>
                             </div>
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': category.valid && !category.pristine, 'fa-times':!category.valid && !category.pristine}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="category.valid || (category.pristine)">
                                     You must select a category.
                                 </div>
@@ -143,7 +148,7 @@
                             <label class="col-sm-3 control-label big">Type </label>
                             <div class="col-sm-8">
                                 <select #type="ngModel" name="type" [(ngModel)]="menuItem.Type" class="form-control big" required>
-                                    <option value=""></option>
+                                    <option value="">Select A Type</option>
                                     <option value="Veg">Veg</option>
                                     <option value="NonVeg">Non-Veg</option>
                                 </select>
@@ -151,8 +156,7 @@
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': type.valid && !type.pristine, 'fa-times':!type.valid && !type.pristine}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="type.valid || (type.pristine)">
                                     You must select a type.
                                 </div>
@@ -167,8 +171,7 @@
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': desc.valid && !desc.pristine, 'fa-times':!desc.valid && !desc.pristine}"></i></p>
                             </div>
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9">
+                            <div class="col-sm-12">
                                 <div class="alert alert-danger big err" [hidden]="desc.valid || (desc.pristine)">
                                     You must enter description for the dish!. (Minimum 20 characters!)
                                 </div>
@@ -177,7 +180,7 @@
 
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <button class="btn btn-success btn-block" [disabled]="!f.valid" type="submit">Save</button>
+                                <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!f.valid" (click)="Save(false)">Save</button>
                             </div>
                             <div class="col-sm-6">
                                 <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>

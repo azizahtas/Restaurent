@@ -1,8 +1,8 @@
 export class MenuItem {
     _id : string;
     Name : string;
-    PHalf : number;
-    PFull : number;
+    HPrice : number;
+    FPrice : number;
     Desc : string;
     Img_Url : string;
     Category : string;
@@ -10,8 +10,8 @@ export class MenuItem {
 
     constructor(){
         this.Name = "";
-        this.PHalf = 0;
-        this.PFull = 0;
+        this.HPrice = 0;
+        this.FPrice = 0;
         this.Desc = "";
         this.Img_Url = "";
         this.Category = "";
