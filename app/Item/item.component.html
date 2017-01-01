@@ -18,20 +18,32 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div *ngFor="let msg of messages" class="alert alert-{{msg.type}}">
+                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                                     <h2>{{msg.title}}</h2>
                                     <h3>{{msg.message}}</h3>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <input class="form-control" type="text" placeholder="Search Here !!">
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-danger">Go!</button>
-                                    </div>
-                                </div>
+                            <div class="col-md-4">
+                                <input #search_name="ngModel" name="name" [(ngModel)]="searchModal.Name" class="form-control big" type="text" placeholder="Search Here !!">
                             </div>
-                            <div class="col-md-6">
-
+                            <div class="col-md-3">
+                                <select #search_cat="ngModel" name="category" [(ngModel)]="searchModal.Category" class="form-control big" required>
+                                    <option value="">Select A Category</option>
+                                    <option *ngFor="let cat of categories" [value]="cat.Name">{{cat.Name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select #search_typ="ngModel" name="type" [(ngModel)]="searchModal.Type" class="form-control big" required>
+                                    <option value="">Select A Type</option>
+                                    <option value="Veg">Veg</option>
+                                    <option value="NonVeg">Non-Veg</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                               <input #search_price="ngModel" name="price" class="form-control big" type="number" [(ngModel)]="searchModal.Price" placeholder="Price">
+                            </div>
+                            <div class="col-md-1">
+                               <a class="btn btn-info" (click)="CompositSearch()"><i class="fa fa-search"></i> Search</a>
                             </div>
                         </div>
 
@@ -40,20 +52,57 @@
                 </div>
             </section>
         </div>
-        <div class="col-md-4">
-            <div class="image">
-                <img alt="300x200" data-src="" style="width: 350px; height: 300px;" src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTTTdMYREAW0sYRUel9R-rBbBiNWVj9RkeKoXOqfqxCzUrHRoT0">
-                <div class="cap">
-                    Dahhhhh!!
+    </div>
+    <div class="row" *ngIf="!view_Details">
+        <div class="col-md-3" *ngFor="let item of searchedMenuItems">
+            <div class="caption-style">
+                <div>
+                    <img alt="300x200" data-src="" style="width: 350px; height: 300px;" [src]="item.Img_Url">
+                    <div class="caption">
+                        <a style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteConfirm" data-toggle="modal" (click)="deleteMenuItem(item)"><i class="fa fa-times fa-2x"></i></a>
+                        <a class="btn btn-info" data-target="#EditMenu" data-toggle="modal" (click)="editMenuItem(item)"><i class="fa fa-edit fa-2x"></i></a>
+                        <div class="blur"></div>
+                        <div class="caption-text" (click)="ViewDetails(item)">
+                            <h1>{{item.Name}}</h1>
+                            <p>Price : ${{item.FPrice}}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
-        <div class=" col-md-4">
-            <img alt="300x200" data-src="holder.js/300x200" style="width:350px; height: 300px;" src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTw1wQ8YLpaYbVFDoJcSsNxWlWt1ZRD3aafT9VLzdkUjCwSaRMTWg">
+    </div>
+    <div class="row" *ngIf="view_Details">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <section class="panel default h1">
+                <div class="block-web">
+                    <div class="porlets-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img alt="300x200" data-src="" style="width: 100%; height: 400px;" [src]="menuItemView.Img_Url">
+                            </div>
+                            <div class="col-md-12">
+                                <br>
+                                <h1 style="text-align: center">{{menuItemView.Name}}</h1>
+                            </div>
+                            <div class="col-md-6">
+                                <h2 style="text-align: center">Description : <span style="color: red">{{menuItemView.Desc}}</span></h2>
+                            </div>
+                            <div class="col-md-6">
+                                <h2 style="text-align: center">Price Half : <span style="color: red">${{menuItemView.HPrice}}</span></h2>
+                                <h2 style="text-align: center">Price Full : <span style="color: green">${{menuItemView.FPrice}}</span></h2>
+                            </div>
+                            <div class="col-md-offset-1">
+                                <a class="btn btn-info" (click)="BackToSearch()">
+                                    <i class="fa fa-2x fa-arrow-left"></i><span style="font-size: 24px"> Back</span></a>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </section>
         </div>
-        <div class="col-md-4">
-            <img alt="300x200" data-src="holder.js/300x200" style="width: 350px; height: 300px;" src="http://ballybally.com/wp-content/uploads/2013/12/pajama-party-food.jpg">
-        </div>
+        <div class="col-md-2"></div>
     </div>
 </div>
 
@@ -65,8 +114,7 @@
                 <h2 style="text-align: center" class="modal-title" id="myModalLabel">Create Menu Item</h2>
             </div>
             <div class="modal-body">
-                <div class="printable_4">
-                    <form #f="ngForm" class="form-horizontal row-border" novalidate>
+                <form #f="ngForm" class="form-horizontal row-border" novalidate>
                         <div class="form-group" [ngClass]="{'has-error': !name.valid && !name.pristine && name.touched, 'has-success':name.valid}">
                             <label class="col-sm-3 control-label big">Name </label>
                             <div class="col-sm-8">
@@ -85,7 +133,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group" [ngClass]="{'has-error': !phalf.valid && !phalf.pristine, 'has-success':name.valid}">
+                        <div class="form-group" [ngClass]="{'has-error': !phalf.valid && !phalf.pristine, 'has-success':phalf.valid}">
                             <label class="col-sm-3 control-label big">Half Price </label>
                             <div class="col-sm-8">
                                 <input #phalf="ngModel" name="phalf" value="" [(ngModel)]="menuItem.HPrice" type="number" placeholder="Enter Half Plate Rate" class="form-control big" required min="1">
@@ -99,7 +147,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group" [ngClass]="{'has-error': !pfull.valid && !pfull.pristine, 'has-success':name.valid}">
+                        <div class="form-group" [ngClass]="{'has-error': !pfull.valid && !pfull.pristine, 'has-success':pfull.valid}">
                             <label class="col-sm-3 control-label big">Full Price </label>
                             <div class="col-sm-8">
                                 <input #pfull="ngModel" name="pfull" [(ngModel)]="menuItem.FPrice" type="number" placeholder="Enter Full Plate Rate" class="form-control big" required min="1">
@@ -180,14 +228,168 @@
 
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!f.valid" (click)="Save(false)">Save</button>
+                                <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!f.valid || checking_Name_Error" (click)="Save(false)">Save</button>
                             </div>
                             <div class="col-sm-6">
                                 <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="EditMenu" tabindex="-1" role="dialog" aria-labelledby="myModalEdit" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h2 style="text-align: center" class="modal-title" id="myModalEdit">Edit Menu Item</h2>
+            </div>
+            <div class="modal-body">
+               <form #fE="ngForm" class="form-horizontal row-border" novalidate>
+                        <div class="form-group" [ngClass]="{'has-error': !nameE.valid && !nameE.pristine && nameE.touched, 'has-success':nameE.valid}">
+                            <label class="col-sm-3 control-label big">Name </label>
+                            <div class="col-sm-8">
+                                <input #nameE="ngModel" name="nameE" (keyup)="CheckName($event.target.value)" [(ngModel)]="menuItemEdit.Name" type="text" placeholder="Enter Dish Name" class="form-control big" required minlength="5">
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': nameE.valid && !nameE.pristine && !checking_Name, 'fa-times':!nameE.valid && !nameE.pristine}"></i></p>
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-spinner fa-spin': checking_Name, 'fa-times fa-spin':checking_Name_Error}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="nameE.valid || (nameE.pristine)">
+                                    Name is required (minimum 5 characters).
+                                </div>
+                                <div class="alert alert-danger big err" [hidden]="!checking_Name_Error">
+                                   Menu Item Already Present!!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': !phalfE.valid && !phalfE.pristine, 'has-success':phalfE.valid}">
+                            <label class="col-sm-3 control-label big">Half Price </label>
+                            <div class="col-sm-8">
+                                <input #phalfE="ngModel" name="phalfE" value="" [(ngModel)]="menuItemEdit.HPrice" type="number" placeholder="Enter Half Plate Rate" class="form-control big" required min="1">
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': phalfE.valid && !phalfE.pristine, 'fa-times':!phalfE.valid && !phalfE.pristine}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="phalfE.valid || (phalfE.pristine)">
+                                    Half Place Price is required (minimum 1 Rupees).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': !pfullE.valid && !pfullE.pristine, 'has-success':pfullE.valid}">
+                            <label class="col-sm-3 control-label big">Full Price </label>
+                            <div class="col-sm-8">
+                                <input #pfullE="ngModel" name="pfullE" [(ngModel)]="menuItemEdit.FPrice" type="number" placeholder="Enter Full Plate Rate" class="form-control big" required min="1">
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': pfullE.valid && !pfullE.pristine, 'fa-times':!pfullE.valid && !pfullE.pristine}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="pfullE.valid || (pfullE.pristine)">
+                                    Full Place Price is required (minimum 1 Rupees).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': !imgE.valid && !imgE.pristine, 'has-success':imgE.valid}">
+                            <label class="col-sm-3 control-label big">Image Url </label>
+                            <div class="col-sm-8">
+                                <input #imgE="ngModel" name="imgE" [(ngModel)]="menuItemEdit.Img_Url" type="text" placeholder="Enter Image Url Of Dish" class="form-control big" required>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': imgE.valid && !imgE.pristine, 'fa-times':!imgE.valid && !imgE.pristine}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="imgE.valid || (imgE.pristine)">
+                                    Image Url Is Required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': !categoryE.valid && !categoryE.pristine, 'has-success':categoryE.valid}">
+                            <label class="col-sm-3 control-label big">Category </label>
+                            <div class="col-sm-8">
+                                <select #categoryE="ngModel" name="categoryE" [(ngModel)]="menuItemEdit.Category" class="form-control big" required>
+                                    <option value="">Select A Category</option>
+                                    <option *ngFor="let cat of categories" [value]="cat.Name">{{cat.Name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': categoryE.valid && !categoryE.pristine, 'fa-times':!categoryE.valid && !categoryE.pristine}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="categoryE.valid || (categoryE.pristine)">
+                                    You must select a category.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="{'has-error': !typeE.valid && !typeE.pristine, 'has-success':typeE.valid}">
+                            <label class="col-sm-3 control-label big">Type </label>
+                            <div class="col-sm-8">
+                                <select #typeE="ngModel" name="typeE" [(ngModel)]="menuItemEdit.Type" class="form-control big" required>
+                                    <option value="">Select A Type</option>
+                                    <option value="Veg">Veg</option>
+                                    <option value="NonVeg">Non-Veg</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': typeE.valid && !typeE.pristine, 'fa-times':!typeE.valid && !typeE.pristine}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="typeE.valid || (typeE.pristine)">
+                                    You must select a type.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" [ngClass]="{'has-error': !descE.valid && !descE.pristine, 'has-success':descE.valid}">
+                            <label class="col-sm-3 control-label big">Description </label>
+                            <div class="col-sm-8">
+                                <textarea #descE="ngModel" name="descE" [(ngModel)]="menuItemEdit.Desc" placeholder="Enter Description for dish!" class="form-control big" required minlength="20"></textarea>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': descE.valid && !descE.pristine, 'fa-times':!descE.valid && !descE.pristine}"></i></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger big err" [hidden]="descE.valid || (descE.pristine)">
+                                    You must enter description for the dish!. (Minimum 20 characters!)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!fE.valid || checking_Name_Error" (click)="Save(true)">Save Changes</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="DeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDelete" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h2 style="text-align: center" class="modal-title" id="myModalDelete">Confirm Delete</h2>
+            </div>
+            <div class="modal-body">
+                <h1>Are You Sure You Want To Delete {{menuItemDelete.Name}}?</h1>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="btn btn-danger btn-block" data-dismiss="modal" (click)="Delete(menuItemDelete._id)">Yes!!</a>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn btn-success btn-block" data-dismiss="modal">No!</a>
+                    </div>
                 </div>
             </div>
         </div>

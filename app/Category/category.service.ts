@@ -12,7 +12,7 @@ export class CategoryService{
     constructor(private _http:Http){}
     private _baseUrl = "http://"+Settings.serverHost+":"+Settings.serverPort+"/api/Category";
 
-    getAllItems(query?) : Observable<GeneralResponseModal>
+    getAllCategories(query?) : Observable<GeneralResponseModal>
     {
         if(query){
             return this._http.get(this._baseUrl+"/u/Search/"+query)

@@ -18,3 +18,16 @@ export class MenuItem {
         this.Type = "";
     }
 }
+
+export class MenuItemSearchModel{
+    Name : string;
+    Price : number;
+    Category : string;
+    Type : string;
+    constructor(){
+        this.Name = "";
+        this.Price = 0;
+        this.Category = "";
+        this.Type = "";
+    }
+}
