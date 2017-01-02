@@ -6,12 +6,8 @@ const itemRoutes: Routes = [
     { path: 'Item', loadChildren: 'app/Item/item.module#ItemModule' },
 ];
 
-const companyRoutes: Routes = [
-    { path: 'Company', loadChildren: 'app/Company/company.module#CompanyModule' },
-];
-
-const stockRoutes: Routes = [
-    { path: 'Stock', loadChildren: 'app/Stock/stock.module#StockModule' },
+const branchRoutes: Routes = [
+    { path: 'Branch', loadChildren: 'app/Branch/branch.module#BranchModule' },
 ];
 
 const dashboardRoutes: Routes = [
@@ -23,8 +19,7 @@ const dashboardRoutes: Routes = [
 
 export const routes : Routes = [
     ...itemRoutes,
-    ...stockRoutes,
-    ...companyRoutes,
+    ...branchRoutes,
     ...dashboardRoutes
 ];
 

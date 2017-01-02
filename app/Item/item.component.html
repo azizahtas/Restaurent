@@ -214,7 +214,7 @@
                         <div class="form-group" [ngClass]="{'has-error': !desc.valid && !desc.pristine, 'has-success':desc.valid}">
                             <label class="col-sm-3 control-label big">Description </label>
                             <div class="col-sm-8">
-                                <textarea #desc="ngModel" name="desc" [(ngModel)]="menuItem.Desc" placeholder="Enter Description for dish!" class="form-control big" required minlength="20"></textarea>
+                                <textarea style="height: 160px !important;" #desc="ngModel" name="desc" [(ngModel)]="menuItem.Desc" placeholder="Enter Description for dish!" class="form-control big" required minlength="20"></textarea>
                             </div>
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': desc.valid && !desc.pristine, 'fa-times':!desc.valid && !desc.pristine}"></i></p>
@@ -348,7 +348,7 @@
                         <div class="form-group" [ngClass]="{'has-error': !descE.valid && !descE.pristine, 'has-success':descE.valid}">
                             <label class="col-sm-3 control-label big">Description </label>
                             <div class="col-sm-8">
-                                <textarea #descE="ngModel" name="descE" [(ngModel)]="menuItemEdit.Desc" placeholder="Enter Description for dish!" class="form-control big" required minlength="20"></textarea>
+                                <textarea style="height: 160px !important;" #descE="ngModel" name="descE" [(ngModel)]="menuItemEdit.Desc" placeholder="Enter Description for dish!" class="form-control big" required minlength="20"></textarea>
                             </div>
                             <div class="col-md-1">
                                 <p class="help-block"><i class="fa" [ngClass]="{'fa-check': descE.valid && !descE.pristine, 'fa-times':!descE.valid && !descE.pristine}"></i></p>
