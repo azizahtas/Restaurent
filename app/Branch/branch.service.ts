@@ -3,7 +3,7 @@ import {Injectable} from "@angular/core";
 import {Settings} from "../settings";
 import "../rxjs.operators";
 import {Http} from "@angular/http";
-import {Branch} from "./branch.modal";
+import {Branch, TableModal} from "./branch.modal";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
 import {Observable} from "rxjs/Observable";
 
@@ -42,6 +42,18 @@ export class BranchService{
             .map(res => res.json())
             .debounceTime(500)
             .distinctUntilChanged()
+    }
+    addTable(branch_Id:string,table : TableModal): Observable<GeneralResponseModal> {
+        return this._http.post(this._baseUrl+'/u/Table/'+branch_Id,table)
+            .map(res => res.json())
+    }
+    editTable(branch_Id:string,table : TableModal): Observable<GeneralResponseModal> {
+        return this._http.put(this._baseUrl+'/u/Table/'+branch_Id,table)
+            .map(res => res.json())
+    }
+    deleteTable(branch_Id:string,table_Id : string): Observable<GeneralResponseModal> {
+        return this._http.delete(this._baseUrl+'/u/Table/'+branch_Id+'/'+table_Id)
+            .map(res => res.json())
     }
 
 }

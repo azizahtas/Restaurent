@@ -25,22 +25,18 @@ export class LocationModal{
     }
 }
 export class TableModal{
+    _id:string;
     TNo: number;
-    Booked: boolean;
     Cap: number;
     Img_Url: string;
+    Note : string;
 }
 
 export class BranchSearchModel {
     Name:string;
     Address:string;
-    Location_Name:string;
-    Cap:number;
-
     constructor(){
         this.Name = "";
         this.Address = "";
-        this.Location_Name = "";
-        this.Cap = 0;
     }
 }
