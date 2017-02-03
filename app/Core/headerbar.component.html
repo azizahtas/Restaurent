@@ -33,8 +33,9 @@
         </div>
 
         <a href="javascript:void(0);" class="add_user" data-toggle="modal" data-target="#YourModal"> <i class="fa fa-plus-square"></i> <span> New Task</span> </a>
-
+-->
         <div class="top_right_bar">
+            <!--
             <div class="top_right">
                 <div class="top_right_menu">
                     <ul>
@@ -94,22 +95,91 @@
                     </ul>
                 </div>
             </div>
-            <div class="user_admin dropdown"> <a href="javascript:void(0);" data-toggle="dropdown">
-                <img src="images/user.png" />
-                <span class="user_adminname">John Doe</span>
+            -->
+            <div class="user_admin dropdown">
+                <a href="javascript:void(0);" data-toggle="dropdown">
+                <img src="../../Public/images/default-profile.png" width="50px" height="50px"/>
+                <span class="user_adminname">uiu56u7</span>
                 <b class="caret"></b> </a>
                 <ul class="dropdown-menu">
                     <div class="top_pointer"></div>
-                    <li> <a href="profile.html"><i class="fa fa-user"></i> Profile</a> </li>
-                    <li> <a href="help.html"><i class="fa fa-question-circle"></i> Help</a> </li>
-                    <li> <a href="settings.html"><i class="fa fa-cog"></i> Setting </a></li>
                     <li> <a href="login.html"><i class="fa fa-power-off"></i> Logout</a> </li>
                 </ul>
             </div>
-
+<!--
             <a href="javascript:;" class="toggle-menu menu-right push-body jPushMenuBtn rightbar-switch"><i class="fa fa-comment chat"></i></a>
+       -->
         </div>
-        -->
     </div>
     <!--\\\\\\\ header top bar end \\\\\\-->
+</div>
+
+<div class="modal fade" id="LoginSignup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h2 style="text-align: center" class="modal-title" id="myModalLabel">Create Branch</h2>
+            </div>
+            <div class="modal-body">
+                <form #f="ngForm" class="form-horizontal row-border" novalidate>
+                    <div class="form-group" [ngClass]="{'has-error': !name.valid && !name.pristine && name.touched, 'has-success':name.valid}">
+                        <label class="col-sm-3 control-label big">Name </label>
+                        <div class="col-sm-8">
+                            <input #name="ngModel" name="name" (keyup)="CheckName($event.target.value)" [(ngModel)]="BranchAdd.Name" type="text" placeholder="Enter Branch Name" class="form-control big" required minlength="5">
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': name.valid && !name.pristine && !checking_Name, 'fa-times':!name.valid && !name.pristine}"></i></p>
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-spinner fa-spin': checking_Name, 'fa-times fa-spin':checking_Name_Error}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="name.valid || (name.pristine)">
+                                Name is required (minimum 5 characters).
+                            </div>
+                            <div class="alert alert-danger big err" [hidden]="!checking_Name_Error">
+                                Branch Already Present!!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'has-error': !img.valid && !img.pristine, 'has-success':img.valid}">
+                        <label class="col-sm-3 control-label big">Image Url </label>
+                        <div class="col-sm-8">
+                            <input #img="ngModel" name="img" [(ngModel)]="BranchAdd.Img_Url" type="text" placeholder="Enter Image Url Of Branch" class="form-control big" required>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': img.valid && !img.pristine, 'fa-times':!img.valid && !img.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="img.valid || (img.pristine)">
+                                Image Url Is Required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'has-error': !adds.valid && !adds.pristine, 'has-success':adds.valid}">
+                        <label class="col-sm-3 control-label big">Address </label>
+                        <div class="col-sm-8">
+                            <textarea #adds="ngModel" name="adds" style="height: 160px !important;" [(ngModel)]="BranchAdd.Address" placeholder="Enter Address Of This Branch!" class="form-control big" required minlength="20"></textarea>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': adds.valid && !adds.pristine, 'fa-times':!adds.valid && !adds.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="adds.valid || (adds.pristine)">
+                                You must enter address for this branch!. (Minimum 20 characters!)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!f.valid || checking_Name_Error" (click)="Save(false)">Save</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
