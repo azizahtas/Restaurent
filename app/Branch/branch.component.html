@@ -1,7 +1,7 @@
 <div class="pull-left breadcrumb_admin clear_both">
     <div class="pull-right page_title theme_color">
         <div class="breadcrumb">
-            <a class="btn btn-success" data-target="#AddBranch" data-toggle="modal">Add Branch</a>
+            <a *ngIf="_auth.isAdmin()" class="btn btn-success" data-target="#AddBranch" data-toggle="modal">Add Branch</a>
         </div>
     </div>
 </div>
@@ -45,8 +45,8 @@
                 <div>
                     <img alt="300x200" data-src="" style="width: 350px; height: 300px;" [src]="branch.Img_Url">
                     <div class="caption">
-                        <a style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteConfirm" data-toggle="modal" (click)="deleteBranch(branch)"><i class="fa fa-times fa-2x"></i></a>
-                        <a class="btn btn-info" data-target="#EditBranch" data-toggle="modal" (click)="editBranch(branch)"><i class="fa fa-edit fa-2x"></i></a>
+                        <a *ngIf="_auth.isAdmin()" style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteConfirm" data-toggle="modal" (click)="deleteBranch(branch)"><i class="fa fa-times fa-2x"></i></a>
+                        <a *ngIf="_auth.isAdmin()" class="btn btn-info" data-target="#EditBranch" data-toggle="modal" (click)="editBranch(branch)"><i class="fa fa-edit fa-2x"></i></a>
                         <div class="blur"></div>
                         <div class="caption-text" (click)="ViewDetails(branch)">
                             <h1>{{branch.Name}}</h1>
@@ -76,7 +76,7 @@
                             <div class="col-md-offset-9">
                                 <a class="btn btn-info" (click)="BackToSearch()">
                                     <i class="fa fa-2x fa-arrow-left"></i><span style="font-size: 24px"></span></a>
-                                <a class="btn btn-success" data-target="#AddTable" data-toggle="modal"><i class="fa fa-plus fa-2x"></i> </a>
+                                <a *ngIf="_auth.isAdmin()" class="btn btn-success" data-target="#AddTable" data-toggle="modal"><i class="fa fa-plus fa-2x"></i> </a>
                             </div>
                         </div>
                         <div class="row">
@@ -85,8 +85,8 @@
                                     <div>
                                         <img alt="150x200" data-src="" style="width: 200px; height: 200px;" [src]="table.Img_Url">
                                         <div class="caption" style="top: 250px">
-                                            <a style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteTableConfirm" data-toggle="modal" (click)="deleteTable(table)"><i class="fa fa-times fa-2x"></i></a>
-                                            <a class="btn btn-info" data-target="#EditTable" data-toggle="modal" (click)="editTable(table)"><i class="fa fa-edit fa-2x"></i></a>
+                                            <a *ngIf="_auth.isAdmin()" style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteTableConfirm" data-toggle="modal" (click)="deleteTable(table)"><i class="fa fa-times fa-2x"></i></a>
+                                            <a *ngIf="_auth.isAdmin()" class="btn btn-info" data-target="#EditTable" data-toggle="modal" (click)="editTable(table)"><i class="fa fa-edit fa-2x"></i></a>
                                             <div class="blur" style="width: 200px;height: 150px"></div>
                                             <div class="caption-text" style="width: 200px;height: 200px">
                                                 <h2>Table No : {{table.TNo}}</h2>
@@ -105,7 +105,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="AddBranch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="AddBranch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -174,7 +174,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="EditBranch" tabindex="-1" role="dialog" aria-labelledby="myModalEdit" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="EditBranch" tabindex="-1" role="dialog" aria-labelledby="myModalEdit" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -243,7 +243,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="DeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDelete" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="DeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDelete" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -265,7 +265,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="AddTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabelT" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="AddTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabelT" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -339,7 +339,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="EditTable" tabindex="-1" role="dialog" aria-labelledby="myModalEditTable" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="EditTable" tabindex="-1" role="dialog" aria-labelledby="myModalEditTable" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -413,7 +413,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="DeleteTableConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteTable" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="DeleteTableConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteTable" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

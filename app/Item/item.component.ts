@@ -4,6 +4,7 @@ import {Message} from "../Shared/Message.modal";
 import {ItemService} from "./item.service";
 import {CategoryService} from "../Category/category.service";
 import {Category} from "../Category/category.modal";
+import {Auth} from "../Auth/auth.service";
 import * as _ from "lodash"
 
 @Component({
@@ -26,7 +27,7 @@ padding: 5px;
 `]
 })
 export class ItemComponent {
-    constructor(private _itm:ItemService,private _cat:CategoryService){}
+    constructor(private _itm:ItemService,private _cat:CategoryService,public _auth:Auth){}
 
      menuItem : MenuItem;
      menuItemEdit : MenuItem;
@@ -100,11 +101,11 @@ export class ItemComponent {
         this._itm.deleteItem(id)
             .subscribe(
                 data => {
-                    if(data.status=="Success"){
+                    if(data.success){
                         this.messages.push({type:'success',title:this.menuItemDelete.Name+' Deleted Successfully!',message:''});
                         this.getAllMenuItems();
                     }
-                    else if(data.status == "Error"){
+                    else if(!data.success){
                         this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                     }
                 },
@@ -126,14 +127,14 @@ export class ItemComponent {
             this._itm.addItem(newItm)
                 .subscribe(
                     data => {
-                        if(data.status=="Success"){
+                        if(data.success){
                             this.messages.push({type:'success',title:this.menuItem.Name+' Created Successfully!',message:''});
                             this.getAllMenuItems();
                             this.menuItem.Name = "";
                             this.menuItem.Img_Url = "";
                             this.menuItem.Desc = "";
                         }
-                        else if(data.status == "Error"){
+                        else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
@@ -146,10 +147,10 @@ export class ItemComponent {
             this._itm.editItem(this.menuItemEdit)
                 .subscribe(
                     data => {
-                        if(data.status=="Success"){
+                        if(data.success){
                             this.messages.push({type:'success',title:this.menuItemEdit.Name+' Saved Successfully!',message:''});
                         }
-                        else if(data.status == "Error"){
+                        else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
@@ -165,11 +166,11 @@ export class ItemComponent {
             .subscribe(
                 data => {
                     this.checking_Name = true;
-                    if(data.status == "Success" && data.data ==null){
+                    if(data.success && data.data ==null){
                         this.checking_Name = false;
                         this.checking_Name_Error = false;
                     }
-                    else if(data.status == "Success" && data.data !=""){
+                    else if(data.success && data.data !=""){
                         this.checking_Name_Error = true;
                         this.checking_Name = false;
                     }
@@ -221,7 +222,7 @@ export class ItemComponent {
         this._itm.getAllItems()
             .subscribe(
                 data=> {
-                    if(data.status == 'Success') {
+                    if(data.success) {
                         this.menuItems = data.data;
                         this.searchedMenuItems = this.menuItems;
                     }
@@ -235,7 +236,7 @@ export class ItemComponent {
         this._cat.getAllCategories()
             .subscribe(
                 data =>{
-                    if(data.status == 'Success') {
+                    if(data.success) {
                         this.categories = data.data;
                     }
                 },

@@ -4,6 +4,7 @@ import {Message} from "../Shared/Message.modal";
 import {BranchService} from "./branch.service";
 import {Category} from "../Category/category.modal";
 import * as _ from "lodash"
+import {Auth} from "../Auth/auth.service";
 
 @Component({
     templateUrl: 'app/Branch/branch.component.html',
@@ -25,7 +26,7 @@ padding: 5px;
 `]
 })
 export class BranchComponent {
-    constructor(private _bran:BranchService){}
+    constructor(private _bran:BranchService, public _auth:Auth){}
 
     BranchAdd : Branch;
     BranchEdit : Branch;
@@ -91,11 +92,11 @@ export class BranchComponent {
             .subscribe(
                 data => {
                     this.checking_Name = true;
-                    if(data.status == "Success" && data.data ==null){
+                    if(data.success && data.data ==null){
                         this.checking_Name = false;
                         this.checking_Name_Error = false;
                     }
-                    else if(data.status == "Success" && data.data !=""){
+                    else if(data.success && data.data !=""){
                         this.checking_Name_Error = true;
                         this.checking_Name = false;
                     }
@@ -114,14 +115,14 @@ public Save(edit){
             this._bran.addBranch(newItm)
                 .subscribe(
                     data => {
-                        if(data.status=="Success"){
+                        if(data.success){
                             this.messages.push({type:'success',title:this.BranchAdd.Name+' Created Successfully!',message:''});
                             this.getAllBranches();
                             this.BranchAdd.Name = "";
                             this.BranchAdd.Img_Url = "";
                             this.BranchAdd.Address = "";
                         }
-                        else if(data.status == "Error"){
+                        else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
@@ -134,10 +135,10 @@ public Save(edit){
             this._bran.editBranch(this.BranchEdit)
                 .subscribe(
                     data => {
-                        if(data.status=="Success"){
+                        if(data.success){
                             this.messages.push({type:'success',title:this.BranchEdit.Name+' Saved Successfully!',message:''});
                         }
-                        else if(data.status == "Error"){
+                        else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
@@ -151,11 +152,11 @@ public Delete(id:string){
         this._bran.deleteBranch(id)
             .subscribe(
                 data => {
-                    if(data.status=="Success"){
+                    if(data.success){
                         this.messages.push({type:'success',title:this.BranchDelete.Name+' Deleted Successfully!',message:''});
                         this.getAllBranches();
                     }
-                    else if(data.status == "Error"){
+                    else if(!data.success){
                         this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                     }
                 },
@@ -197,11 +198,11 @@ public SaveTable(edit){
             this._bran.addTable(this.BranchView._id,newItm)
                 .subscribe(
                     data => {
-                        if(data.status=="Success"){
+                        if(data.success){
                             this.messages.push({type:'success',title:'TNo : '+this.TableAdd.TNo+' Created Successfully!',message:''});
                             this.BranchView.Tables = data.data;
                         }
-                        else if(data.status == "Error"){
+                        else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
@@ -214,11 +215,11 @@ public SaveTable(edit){
             this._bran.editTable(this.BranchView._id,this.TableEdit)
                 .subscribe(
                     data => {
-                        if(data.status=="Success"){
+                        if(data.success){
                             this.messages.push({type:'success',title:'TNo : '+this.TableEdit.TNo+' Saved Successfully!',message:''});
                             this.BranchView.Tables = data.data;
                         }
-                        else if(data.status == "Error"){
+                        else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
@@ -232,11 +233,11 @@ public DeleteTable(id:string){
         this._bran.deleteTable(this.BranchView._id,id)
             .subscribe(
                 data => {
-                    if(data.status=="Success"){
+                    if(data.success){
                         this.messages.push({type:'success',title:'TNo : '+this.TableDelete.TNo+' Deleted Successfully!',message:''});
                         this.BranchView.Tables = data.data;
                     }
-                    else if(data.status == "Error"){
+                    else if(!data.success){
                         this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                     }
                 },
@@ -289,7 +290,7 @@ public DeleteTable(id:string){
         this._bran.getAllBranches()
             .subscribe(
                 data=> {
-                    if(data.status == 'Success') {
+                    if(data.success) {
                         this.Branches = data.data;
                         this.searchedBranches = this.Branches;
                     }

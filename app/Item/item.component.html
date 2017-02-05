@@ -5,7 +5,7 @@
     </div>
     <div class="pull-right page_title theme_color">
         <div class="breadcrumb">
-            <a class="btn btn-success" data-target="#AddMenu" data-toggle="modal">Add Menu Item</a>
+            <a *ngIf="_auth.isAdmin()" class="btn btn-success" data-target="#AddMenu" data-toggle="modal">Add Menu Item</a>
         </div>
     </div>
 </div>
@@ -59,8 +59,8 @@
                 <div>
                     <img alt="300x200" data-src="" style="width: 350px; height: 300px;" [src]="item.Img_Url">
                     <div class="caption">
-                        <a style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteConfirm" data-toggle="modal" (click)="deleteMenuItem(item)"><i class="fa fa-times fa-2x"></i></a>
-                        <a class="btn btn-info" data-target="#EditMenu" data-toggle="modal" (click)="editMenuItem(item)"><i class="fa fa-edit fa-2x"></i></a>
+                        <a *ngIf="_auth.isAdmin()" style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteConfirm" data-toggle="modal" (click)="deleteMenuItem(item)"><i class="fa fa-times fa-2x"></i></a>
+                        <a *ngIf="_auth.isAdmin()" class="btn btn-info" data-target="#EditMenu" data-toggle="modal" (click)="editMenuItem(item)"><i class="fa fa-edit fa-2x"></i></a>
                         <div class="blur"></div>
                         <div class="caption-text" (click)="ViewDetails(item)">
                             <h1>{{item.Name}}</h1>
@@ -106,7 +106,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="AddMenu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="AddMenu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -240,7 +240,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="EditMenu" tabindex="-1" role="dialog" aria-labelledby="myModalEdit" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="EditMenu" tabindex="-1" role="dialog" aria-labelledby="myModalEdit" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -374,7 +374,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="DeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDelete" aria-hidden="true" style="display: none">
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="DeleteConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalDelete" aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

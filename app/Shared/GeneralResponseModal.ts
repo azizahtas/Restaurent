@@ -1,5 +1,5 @@
 export interface GeneralResponseModal {
-    status : string;
+    success : boolean;
     data : any;
     msg : string;
 }

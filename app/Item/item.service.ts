@@ -6,10 +6,11 @@ import {Http} from "@angular/http";
 import {MenuItem} from "./Item.modal";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
 import {Observable} from "rxjs/Observable";
+import {AuthHttp} from "angular2-jwt";
 
 @Injectable()
 export class ItemService{
-    constructor(private _http:Http){}
+    constructor(private _http:Http,private _authHttp :AuthHttp){}
     private _baseUrl = "http://"+Settings.serverHost+":"+Settings.serverPort+"/api/menu";
 
     getAllItems(query?) : Observable<GeneralResponseModal>
@@ -24,7 +25,7 @@ export class ItemService{
     }
 
     addItem(item : MenuItem): Observable<GeneralResponseModal> {
-        return this._http.post(this._baseUrl,item)
+        return this._authHttp.post(this._baseUrl,item)
             .map(res => res.json())
     }
 

@@ -25,7 +25,8 @@
             'rxjs':                       'npm:rxjs',
             'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
             'primeng':                    'node_modules/primeng',
-            'lodash' :                    'node_modules/lodash'
+            'lodash' :                    'node_modules/lodash',
+            'angular2-jwt': 'npm:angular2-jwt/angular2-jwt.js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -40,8 +41,9 @@
                 main: './index.js',
                 defaultExtension: 'js'
             },
-            'primeng':                    { defaultExtension: 'js' },
-            'lodash':                    { main : 'index.js', defaultExtension: 'js' }
+            'primeng':      { defaultExtension: 'js' },
+            'lodash':       { main : 'index.js', defaultExtension: 'js' },
+            'angular2-jwt': { defaultExtension: 'js' }
         }
     });
 })(this);

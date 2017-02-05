@@ -96,16 +96,22 @@
                 </div>
             </div>
             -->
-            <div class="user_admin dropdown">
+            <div class="user_admin dropdown" *ngIf="!_auth.loggedIn()">
+                <a href="" data-toggle="modal" data-target="#LoginSignup">
+                <img src="../../Public/images/default-profile.png" width="50px" height="50px"/>
+                </a>
+            </div>
+            <div class="user_admin dropdown" *ngIf="_auth.loggedIn()">
                 <a href="javascript:void(0);" data-toggle="dropdown">
                 <img src="../../Public/images/default-profile.png" width="50px" height="50px"/>
-                <span class="user_adminname">uiu56u7</span>
+              <!--  <span class="user_adminname"></span> -->
                 <b class="caret"></b> </a>
                 <ul class="dropdown-menu">
                     <div class="top_pointer"></div>
-                    <li> <a href="login.html"><i class="fa fa-power-off"></i> Logout</a> </li>
+                    <li> <a (click)="Logout()"><i class="fa fa-power-off"></i> Logout</a> </li>
                 </ul>
             </div>
+            
 <!--
             <a href="javascript:;" class="toggle-menu menu-right push-body jPushMenuBtn rightbar-switch"><i class="fa fa-comment chat"></i></a>
        -->
@@ -119,66 +125,74 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h2 style="text-align: center" class="modal-title" id="myModalLabel">Create Branch</h2>
+                <h2 style="text-align: center" class="modal-title" id="myModalLabel">Login / Signup</h2>
             </div>
             <div class="modal-body">
-                <form #f="ngForm" class="form-horizontal row-border" novalidate>
-                    <div class="form-group" [ngClass]="{'has-error': !name.valid && !name.pristine && name.touched, 'has-success':name.valid}">
-                        <label class="col-sm-3 control-label big">Name </label>
-                        <div class="col-sm-8">
-                            <input #name="ngModel" name="name" (keyup)="CheckName($event.target.value)" [(ngModel)]="BranchAdd.Name" type="text" placeholder="Enter Branch Name" class="form-control big" required minlength="5">
-                        </div>
-                        <div class="col-md-1">
-                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': name.valid && !name.pristine && !checking_Name, 'fa-times':!name.valid && !name.pristine}"></i></p>
-                            <p class="help-block"><i class="fa" [ngClass]="{'fa-spinner fa-spin': checking_Name, 'fa-times fa-spin':checking_Name_Error}"></i></p>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="alert alert-danger big err" [hidden]="name.valid || (name.pristine)">
-                                Name is required (minimum 5 characters).
-                            </div>
-                            <div class="alert alert-danger big err" [hidden]="!checking_Name_Error">
-                                Branch Already Present!!
-                            </div>
-                        </div>
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active"><a data-toggle="tab" href="#login_form">Login</a></li>
+                    <li class=""><a data-toggle="tab" href="#signup_form">Signup</a></li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div id="login_form" class="tab-pane fade active in">
+                                    <form #f="ngForm" class="form-horizontal row-border" novalidate>
+                                        <div class="form-group" [ngClass]="{'has-error': !email.valid && !email.pristine && email.touched, 'has-success':email.valid}">
+                                            <label class="col-sm-3 control-label big">Email Id </label>
+                                            <div class="col-sm-8">
+                                                <input #email="ngModel" name="email" [(ngModel)]="user.email" type="email" placeholder="Enter Your Email Id" class="form-control big" required minlength="5">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': email.valid && !email.pristine , 'fa-times':!email.valid && !email.pristine}"></i></p>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="alert alert-danger big err" [hidden]="email.valid || (email.pristine)">
+                                                    Email Id is required (minimum 5 characters).
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" [ngClass]="{'has-error': !pass.valid && !pass.pristine && pass.touched, 'has-success':pass.valid}">
+                                            <label class="col-sm-3 control-label big">Password </label>
+                                            <div class="col-sm-8">
+                                                <input #pass="ngModel" name="pass" [(ngModel)]="user.password" type="password" placeholder="Enter Your Password" class="form-control big" required minlength="5">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': pass.valid && !pass.pristine , 'fa-times':!pass.valid && !pass.pristine}"></i></p>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="alert alert-danger big err" [hidden]="pass.valid || (pass.pristine)">
+                                                    Password is required (minimum 5 characters).
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-12" [hidden]="!incorrect">
+                                                <div class="alert alert-danger big err">
+                                                    Your Email Or Password is Incorrect! Please try again!
+                                                    Don't Have an account yet then Sign-Up.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-12" [hidden]="!serverOffline">
+                                                <div class="alert alert-danger big err">
+                                                   We are Sorry! Server Seems to be offline!
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-success btn-block" [disabled]="!f.valid" (click)="Login()">Login</button>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
                     </div>
-                    <div class="form-group" [ngClass]="{'has-error': !img.valid && !img.pristine, 'has-success':img.valid}">
-                        <label class="col-sm-3 control-label big">Image Url </label>
-                        <div class="col-sm-8">
-                            <input #img="ngModel" name="img" [(ngModel)]="BranchAdd.Img_Url" type="text" placeholder="Enter Image Url Of Branch" class="form-control big" required>
-                        </div>
-                        <div class="col-md-1">
-                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': img.valid && !img.pristine, 'fa-times':!img.valid && !img.pristine}"></i></p>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="alert alert-danger big err" [hidden]="img.valid || (img.pristine)">
-                                Image Url Is Required.
-                            </div>
-                        </div>
+                    <div id="signup_form" class="tab-pane fade">
+                        SignUp Form Goes Here!!
                     </div>
-                    <div class="form-group" [ngClass]="{'has-error': !adds.valid && !adds.pristine, 'has-success':adds.valid}">
-                        <label class="col-sm-3 control-label big">Address </label>
-                        <div class="col-sm-8">
-                            <textarea #adds="ngModel" name="adds" style="height: 160px !important;" [(ngModel)]="BranchAdd.Address" placeholder="Enter Address Of This Branch!" class="form-control big" required minlength="20"></textarea>
-                        </div>
-                        <div class="col-md-1">
-                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': adds.valid && !adds.pristine, 'fa-times':!adds.valid && !adds.pristine}"></i></p>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="alert alert-danger big err" [hidden]="adds.valid || (adds.pristine)">
-                                You must enter address for this branch!. (Minimum 20 characters!)
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-6">
-                            <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!f.valid || checking_Name_Error" (click)="Save(false)">Save</button>
-                        </div>
-                        <div class="col-sm-6">
-                            <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
