@@ -37,9 +37,4 @@ export class HeaderBarComponent{
                 ()=> {}
             )
     }
-
-    public Logout(){
-        localStorage.removeItem('token');
-    }
-
 }

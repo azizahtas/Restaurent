@@ -138,7 +138,10 @@ export class ItemComponent {
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
                     },
-                    err =>{},
+                    err =>{
+                        this.messages.push({type:'danger',title:'Error Occurred!',message:'Please Login Again!'});
+                        this._auth.Logout();
+                    },
                     ()=>{this.checking_Name = false; this.checking_Name_Error = false;}
                 )
 
@@ -153,6 +156,7 @@ export class ItemComponent {
                         else if(!data.success){
                             this.messages.push({type:'danger',title:'Error Occurred!',message:'Something Went Wrong Server Side!'});
                         }
+                        console.log(data);
                     },
                     err =>{},
                     ()=>{this.checking_Name = false; this.checking_Name_Error = false;}

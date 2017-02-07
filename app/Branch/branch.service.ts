@@ -6,10 +6,11 @@ import {Http} from "@angular/http";
 import {Branch, TableModal} from "./branch.modal";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
 import {Observable} from "rxjs/Observable";
+import {AuthHttp} from "angular2-jwt";
 
 @Injectable()
 export class BranchService{
-    constructor(private _http:Http){}
+    constructor(private _http:Http,private _authHttp :AuthHttp){}
     private _baseUrl = "http://"+Settings.serverHost+":"+Settings.serverPort+"/api/branch";
 
     getAllBranches(query?) : Observable<GeneralResponseModal>
@@ -24,17 +25,17 @@ export class BranchService{
     }
 
     addBranch(item : Branch): Observable<GeneralResponseModal> {
-        return this._http.post(this._baseUrl,item)
+        return this._authHttp.post(this._baseUrl,item)
             .map(res => res.json())
     }
 
     editBranch(branch : Branch): Observable<GeneralResponseModal> {
-        return this._http.put(this._baseUrl+'/'+branch._id,branch)
+        return this._authHttp.put(this._baseUrl+'/'+branch._id,branch)
             .map(res => res.json())
     }
 
     deleteBranch(Id : string): Observable<GeneralResponseModal> {
-        return this._http.delete(this._baseUrl+'/'+Id)
+        return this._authHttp.delete(this._baseUrl+'/'+Id)
             .map(res => res.json())
     }
     checkName(name : string): Observable<GeneralResponseModal> {
@@ -44,15 +45,15 @@ export class BranchService{
             .distinctUntilChanged()
     }
     addTable(branch_Id:string,table : TableModal): Observable<GeneralResponseModal> {
-        return this._http.post(this._baseUrl+'/u/Table/'+branch_Id,table)
+        return this._authHttp.post(this._baseUrl+'/u/Table/'+branch_Id,table)
             .map(res => res.json())
     }
     editTable(branch_Id:string,table : TableModal): Observable<GeneralResponseModal> {
-        return this._http.put(this._baseUrl+'/u/Table/'+branch_Id,table)
+        return this._authHttp.put(this._baseUrl+'/u/Table/'+branch_Id,table)
             .map(res => res.json())
     }
     deleteTable(branch_Id:string,table_Id : string): Observable<GeneralResponseModal> {
-        return this._http.delete(this._baseUrl+'/u/Table/'+branch_Id+'/'+table_Id)
+        return this._authHttp.delete(this._baseUrl+'/u/Table/'+branch_Id+'/'+table_Id)
             .map(res => res.json())
     }
 

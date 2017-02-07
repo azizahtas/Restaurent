@@ -30,12 +30,12 @@ export class ItemService{
     }
 
     editItem(item : MenuItem): Observable<GeneralResponseModal> {
-        return this._http.put(this._baseUrl+'/'+item._id,item)
+        return this._authHttp.put(this._baseUrl+'/'+item._id,item)
             .map(res => res.json())
     }
 
     deleteItem(Id : string): Observable<GeneralResponseModal> {
-        return this._http.delete(this._baseUrl+'/'+Id)
+        return this._authHttp.delete(this._baseUrl+'/'+Id)
             .map(res => res.json())
     }
 
