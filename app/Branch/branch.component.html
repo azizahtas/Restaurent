@@ -532,7 +532,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" [ngClass]="{'has-error': !Phone.valid && !Phone.pristine && Phone.touched, 'has-success':Phone.valid}">
+                    <div *ngIf="!_auth.loggedIn()" class="form-group" [ngClass]="{'has-error': !Phone.valid && !Phone.pristine && Phone.touched, 'has-success':Phone.valid}">
                         <label class="col-sm-3 control-label big">Phone Number </label>
                         <div class="col-sm-8">
                             <input #Phone="ngModel" name="Phone" [(ngModel)]="userSignup.otherDetails.phone" type="number" placeholder="Enter Phone Number" class="form-control big" required>
@@ -546,17 +546,48 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" [ngClass]="{'has-error': !Phone.valid && !Phone.pristine && Phone.touched, 'has-success':Phone.valid}">
-                        <label class="col-sm-3 control-label big">Phone Number </label>
+                    <div class="form-group" [ngClass]="{'has-error': !Date.valid && !Date.pristine && Date.touched, 'has-success':Date.valid}">
+                        <label class="col-sm-3 control-label big">Select Date </label>
                         <div class="col-sm-8">
-                          <p-calendar [(ngModel)]="Booking.Date" dateFormat="dd.mm.yy" #Date="ngModel" name="Date"></p-calendar>
+                          <p-calendar [(ngModel)]="Booking.Date" dateFormat="dd/mm/yy"  [minDate]="minDate" [maxDate]="maxDate" [showIcon]="true" #Date="ngModel" name="Date" [defaultDate]='today'></p-calendar>
                         </div>
                         <div class="col-md-1">
-                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Phone.valid && !Phone.pristine , 'fa-times':!Phone.valid && !Phone.pristine}"></i></p>
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Date.valid && !Date.pristine , 'fa-times':!Date.valid && !Date.pristine}"></i></p>
                         </div>
                         <div class="col-sm-12">
-                            <div class="alert alert-danger big err" [hidden]="Phone.valid || (Phone.pristine) || (BRpass?.value != BSpass?.value)">
-                                Phone Number is required.
+                            <div class="alert alert-danger big err" [hidden]="Date.valid || (Date.pristine)">
+                                Date is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'has-error': !Time.valid && !Time.pristine && Time.touched, 'has-success':Time.valid}">
+                        <label class="col-sm-3 control-label big">Select Time </label>
+                        <div class="col-sm-8">
+                            <select #Time="ngModel" name="Time" [(ngModel)]="Booking._TimeSlotId" class="form-control big" required>
+                               <option value="">Select A Time Slot</option>
+                               <option *ngFor="let time of TimeSlots" [value]='time._id'>{{time.StartTime}} - {{time.EndTime}}</option>     
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Time.valid && !Time.pristine , 'fa-times':!Time.valid && !Time.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="Time.valid || (Time.pristine)" >
+                                TimeSlot is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'has-error': !NoOfPersons.valid && !NoOfPersons.pristine && NoOfPersons.touched, 'has-success':NoOfPersons.valid}">
+                        <label class="col-sm-4 control-label big">Number Of Persons </label>
+                        <div class="col-sm-7">
+                            <input #NoOfPersons="ngModel" name="NoOfPersons" [(ngModel)]="Booking.NoOfPersons" type="number" placeholder="Enter No Of Persons" class="form-control big" required>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': NoOfPersons.valid && !NoOfPersons.pristine , 'fa-times':!NoOfPersons.valid && !NoOfPersons.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="NoOfPersons.valid || (NoOfPersons.pristine)" >
+                                You Must Enter No Of People that Are Going to come with you!.
                             </div>
                         </div>
                     </div>
@@ -577,10 +608,10 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-6" *ngIf="_auth.loggedIn()">
-                            <button  class="btn btn-success btn-block" [disabled]="!sf.valid" (click)="BookTable(false)">Book Table</button>
+                            <button  class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid" (click)="BookTable(false)">Book Table</button>
                         </div>
                         <div class="col-sm-6" *ngIf="!_auth.loggedIn()">
-                            <button  class="btn btn-success btn-block" [disabled]="!sf.valid || (BRpass?.value != BSpass?.value)" (click)="BookTable(true)">Sign-Up & Book</button>
+                            <button  class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid || (BRpass?.value != BSpass?.value)" (click)="BookTable(true)">Sign-Up & Book</button>
                         </div>
                         <div class="col-sm-6">
                             <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>

@@ -6,7 +6,10 @@ import {Category} from "../Category/category.modal";
 import * as _ from "lodash"
 import {Auth} from "../Auth/auth.service";
 import {UserService} from "../User/user.service";
+import {BookingService} from "../Booking/booking.service";
 import {UserSignup} from "../User/user.modal";
+import {TimeSlotService} from "../TimeSlot/timeslot.service";
+import {TimeSlot} from "../TimeSlot/timeslot.modal";
 import {Booking} from "../Booking/booking.modal";
 import {CalendarModule} from 'primeng/primeng';
 
@@ -27,10 +30,15 @@ import {CalendarModule} from 'primeng/primeng';
 .err{
 padding: 5px;
 }
+.ui-inputtext {
+    font-size : 20px !important;
+}
 `]
 })
 export class BranchComponent {
-    constructor(private _bran:BranchService, public _auth:Auth, public _user:UserService){}
+    constructor(private _bran:BranchService, public _auth:Auth, 
+    private _user:UserService, private _timeslot:TimeSlotService,
+    private _book:BookingService){}
 
     BranchAdd : Branch;
     BranchEdit : Branch;
@@ -47,6 +55,7 @@ export class BranchComponent {
     lastTableNo:number = 0;
 
     Branches : Branch[];
+    TimeSlots : TimeSlot[];    
     searchedBranches : Branch[];
     messages : Message[];
 
@@ -62,8 +71,14 @@ export class BranchComponent {
     checking_Email_Error : boolean = false;
 
     public temp : string = "";
+    public today : Date;
+    public minDate : Date;
+    public maxDate : Date;
 
     ngOnInit(){
+        this.Branches = [];
+        this.TimeSlots = [];
+
         this.BranchAdd = new Branch();
         this.BranchEdit = new Branch();
         this.BranchDelete = new Branch();
@@ -74,7 +89,15 @@ export class BranchComponent {
         this.TableEdit=new TableModal();
         this.TableDelete = new TableModal();
         this.Booking = new Booking();
+
+        this.today = new Date();
+        this.minDate = new Date();
+        this.maxDate = new Date();
+        this.minDate.setMonth(this.today.getMonth());
+        this.maxDate.setMonth(this.today.getMonth());
+        this.maxDate.setDate(this.minDate.getDate()+5);
         this.getAllBranches();
+        this.getAllTimeSlots();        
     }
     ViewDetails(branch:Branch){
         this.BranchView = branch;
@@ -303,11 +326,12 @@ public DeleteTable(id:string){
                         var token = data.data;
                         localStorage.setItem('token', token);
                         this.Booking._UserId = this._auth.getId();
-                        this._bran.addBooking(this.Booking)
+                        this._book.addBooking(this.Booking)
                         .subscribe(
                             data=>{
                                 if(data.success){
-                                     this.messages.push({type:'success',title:'Your Table is Booked!',message:'Table Booked At Date : '+this.Booking.Date+' Time : '+this.Booking.Time+' For '+this.Booking.NoOfPersons+' Persons!'});    
+                                    var date = new Date(this.Booking.Date);
+                                     this.messages.push({type:'success',title:'Your Table is Booked!',message:'Table Booked At Date : '+date.getDay()+'/'+date.getMonth()+'/'+date.getFullYear()+' For '+this.Booking.NoOfPersons+' Persons!'});    
                                 }
                                 else{
                                     this.messages.push({type:'danger',title:'Try Booking Again! Sorry We Couldnt Book Your Table!',message:'Error : '+data.msg});
@@ -332,11 +356,12 @@ public DeleteTable(id:string){
             )
         }
         else{
-             this._bran.addBooking(this.Booking)
+             this._book.addBooking(this.Booking)
                         .subscribe(
                             data=>{
                                 if(data.success){
-                                     this.messages.push({type:'success',title:'Your Table is Booked!',message:'Table Booked At Date : '+this.Booking.Date+' Time : '+this.Booking.Time+' For '+this.Booking.NoOfPersons+' Persons!'});    
+                                   var date = new Date(this.Booking.Date);
+                                     this.messages.push({type:'success',title:'Your Table is Booked!',message:'Table Booked At Date : '+date.getDay()+'/'+date.getMonth()+'/'+date.getFullYear()+' For '+this.Booking.NoOfPersons+' Persons!'});    
                                 }
                                 else{
                                     this.messages.push({type:'danger',title:'Try Booking Again! Sorry We Couldnt Book Your Table!',message:'Error : '+data.msg});
@@ -403,4 +428,16 @@ public DeleteTable(id:string){
                 ()=>{}
             )
     }
+    getAllTimeSlots(){
+    this._timeslot.getAllTimeSlots()
+        .subscribe(
+            data=> {
+                if(data.success) {
+                    this.TimeSlots = data.data;
+                }
+            },
+            err=>{},
+            ()=>{}
+        )
+}
 }

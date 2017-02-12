@@ -5,7 +5,7 @@ export class Booking{
     _TableId : string;
     TNo : number;
     Date : string;
-    Time : number;
+    _TimeSlotId : string;
     NoOfPersons : number;
     Orders : Order[];
 
@@ -15,7 +15,7 @@ export class Booking{
         this._TableId = "";
         this.TNo = null;
         this.Date = "";
-        this.Time = null;
+        this._TimeSlotId = "";
         this.NoOfPersons = null;
         this.Orders = [];
     }

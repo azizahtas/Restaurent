@@ -4,6 +4,8 @@ import {BranchCenterComponent} from "./branchCenter.component";
 import {BranchComponent} from "./branch.component";
 import {SharedModule} from "../Shared/shared.module";
 import {BranchService} from "./branch.service";
+import {TimeSlotService} from "../TimeSlot/timeslot.service";
+import {BookingService} from "../Booking/booking.service";
 import {CalendarModule} from "primeng/primeng";
 
 @NgModule({
@@ -12,6 +14,6 @@ import {CalendarModule} from "primeng/primeng";
         BranchCenterComponent,
         BranchComponent
     ],
-    providers : [BranchService]
+    providers : [BranchService,TimeSlotService,BookingService]
 })
 export class BranchModule { }

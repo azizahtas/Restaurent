@@ -57,11 +57,4 @@ export class BranchService{
         return this._authHttp.delete(this._baseUrl+'/u/Table/'+branch_Id+'/'+table_Id)
             .map(res => res.json())
     }
-
-    addBooking(booking:Booking): Observable<GeneralResponseModal>{
-        return this._authHttp.post(this._baseUrl+'/Booking/',booking)
-            .map(res => res.json())
-    }
-
-
 }
