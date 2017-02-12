@@ -109,6 +109,7 @@
                 <ul class="dropdown-menu">
                     <div class="top_pointer"></div>
                     <li> <a (click)="_auth.Logout()"><i class="fa fa-power-off"></i> Logout</a> </li>
+                    <li> <a [routerLink]="['Booking']"><i class="fa fa-book"></i>My Bookings</a> </li>
                 </ul>
             </div>
             
@@ -128,6 +129,7 @@
                 <h2 style="text-align: center" class="modal-title" id="myModalLabel">Login / Signup</h2>
             </div>
             <div class="modal-body">
+
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#login_form">Login</a></li>
                     <li class=""><a data-toggle="tab" href="#signup_form">Signup</a></li>
@@ -308,6 +310,54 @@
                         </form>
                     </div>
                 </div>
+                <!--<div class="container" [ngClass]="{active: active}">
+                    <div class="card"></div>
+                    <div class="card">
+                        <h1 class="title">Login</h1>
+                        <form>
+                            <div class="input-container">
+                                <input type="#{type}" id="#{label}" required="required" />
+                                <label for="#{label}">Username</label>
+                                <div class="bar"></div>
+                            </div>
+                            <div class="input-container">
+                                <input type="#{type}" id="#{label}" required="required" />
+                                <label for="#{label}">Password</label>
+                                <div class="bar"></div>
+                            </div>
+                            <div class="button-container">
+                                <button><span>Go</span></button>
+                            </div>
+                            <div class="footer"><a href="#">Forgot your password?</a></div>
+                        </form>
+                    </div>
+                    <div class="card alt">
+                        <div class="toggle" (click)="ToggleActive()"></div>
+                        <h1 class="title">Register
+                            <div class="close" (click)="ToggleActive()"></div>
+                        </h1>
+                        <form>
+                            <div class="input-container">
+                                <input type="#{type}" id="#{label}" required="required" />
+                                <label for="#{label}">Username</label>
+                                <div class="bar"></div>
+                            </div>
+                            <div class="input-container">
+                                <input type="#{type}" id="#{label}" required="required" />
+                                <label for="#{label}">Password</label>
+                                <div class="bar"></div>
+                            </div>
+                            <div class="input-container">
+                                <input type="#{type}" id="#{label}" required="required" />
+                                <label for="#{label}">Repeat Password</label>
+                                <div class="bar"></div>
+                            </div>
+                            <div class="button-container">
+                                <button><span>Next</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>-->
 
             </div>
         </div>

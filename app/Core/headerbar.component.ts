@@ -4,7 +4,8 @@ import {UserLogin, UserSignup} from "../User/user.modal";
 import {UserService} from "../User/user.service";
 @Component({
     selector : 'headerbar',
-    templateUrl : './app/Core/headerbar.component.html'
+    templateUrl : './app/Core/headerbar.component.html',
+    styleUrls: ['./Public/plugins/LoginSignUpForm/loginsignup.css']
 })
 export class HeaderBarComponent{
     constructor(public _auth:Auth, public _user:UserService){}
@@ -16,6 +17,7 @@ export class HeaderBarComponent{
     incorrect : boolean = false;
     incorrectSignup : boolean = false;
     serverOffline : boolean = false;
+    active: boolean = false;
 
     checking_Email : boolean = false;
     checking_Email_Error : boolean = false;
@@ -80,6 +82,10 @@ export class HeaderBarComponent{
                 },
                 err =>{this.serverOffline = true;},()=>{this.checking_Email = false;}
             )
+    }
+
+    public ToggleActive(){
+        this.active = !this.active;
     }
 
 }

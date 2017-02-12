@@ -10,6 +10,10 @@ const branchRoutes: Routes = [
     { path: 'Branch', loadChildren: 'app/Branch/branch.module#BranchModule' },
 ];
 
+const bookingRoutes: Routes = [
+    { path: 'Booking', loadChildren: 'app/Booking/booking.module#BookingModule' },
+];
+
 const dashboardRoutes: Routes = [
     { path: 'DashboardCenter', loadChildren: 'app/Dashboard/dashboard.module#DashboardModule' },
     { path: '', redirectTo: "/DashboardCenter", pathMatch: 'full' }
@@ -18,6 +22,7 @@ const dashboardRoutes: Routes = [
 
 
 export const routes : Routes = [
+    ...bookingRoutes,
     ...itemRoutes,
     ...branchRoutes,
     ...dashboardRoutes
