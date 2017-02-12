@@ -134,62 +134,178 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div id="login_form" class="tab-pane fade active in">
-                                    <form #f="ngForm" class="form-horizontal row-border" novalidate>
-                                        <div class="form-group" [ngClass]="{'has-error': !email.valid && !email.pristine && email.touched, 'has-success':email.valid}">
-                                            <label class="col-sm-3 control-label big">Email Id </label>
-                                            <div class="col-sm-8">
-                                                <input #email="ngModel" name="email" [(ngModel)]="user.email" type="email" placeholder="Enter Your Email Id" class="form-control big" required minlength="5">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': email.valid && !email.pristine , 'fa-times':!email.valid && !email.pristine}"></i></p>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <div class="alert alert-danger big err" [hidden]="email.valid || (email.pristine)">
-                                                    Email Id is required (minimum 5 characters).
-                                                </div>
-                                            </div>
+                            <form #f="ngForm" class="form-horizontal row-border" novalidate>
+                                <div class="form-group" [ngClass]="{'has-error': !email.valid && !email.pristine && email.touched, 'has-success':email.valid}">
+                                    <label class="col-sm-3 control-label big">Email Id </label>
+                                    <div class="col-sm-8">
+                                        <input [(ngModel)]="user.email" name="email" #email="ngModel" type="email" placeholder="Enter Your Email Id" class="form-control big" required minlength="5" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <p class="help-block"><i class="fa" [ngClass]="{'fa-check': email.valid && !email.pristine , 'fa-times':!email.valid && !email.pristine}"></i></p>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-danger big err" [hidden]="email.valid || (email.pristine)">
+                                            Email Id is required (minimum 5 characters).
                                         </div>
-                                        <div class="form-group" [ngClass]="{'has-error': !pass.valid && !pass.pristine && pass.touched, 'has-success':pass.valid}">
-                                            <label class="col-sm-3 control-label big">Password </label>
-                                            <div class="col-sm-8">
-                                                <input #pass="ngModel" name="pass" [(ngModel)]="user.password" type="password" placeholder="Enter Your Password" class="form-control big" required minlength="5">
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="help-block"><i class="fa" [ngClass]="{'fa-check': pass.valid && !pass.pristine , 'fa-times':!pass.valid && !pass.pristine}"></i></p>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <div class="alert alert-danger big err" [hidden]="pass.valid || (pass.pristine)">
-                                                    Password is required (minimum 5 characters).
-                                                </div>
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" [ngClass]="{'has-error': !pass.valid && !pass.pristine && pass.touched, 'has-success':pass.valid}">
+                                    <label class="col-sm-3 control-label big">Password </label>
+                                    <div class="col-sm-8">
+                                        <input #pass="ngModel" name="pass" [(ngModel)]="user.password" type="password" placeholder="Enter Your Password" class="form-control big" required minlength="5">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <p class="help-block"><i class="fa" [ngClass]="{'fa-check': pass.valid && !pass.pristine , 'fa-times':!pass.valid && !pass.pristine}"></i></p>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-danger big err" [hidden]="pass.valid || (pass.pristine)">
+                                            Password is required (minimum 5 characters).
                                         </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-12" [hidden]="!incorrect">
-                                                <div class="alert alert-danger big err">
-                                                    Your Email Or Password is Incorrect! Please try again!
-                                                    Don't Have an account yet then Sign-Up.
-                                                </div>
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12" [hidden]="!incorrect">
+                                        <div class="alert alert-danger big err">
+                                            Your Email Or Password is Incorrect! Please try again!
+                                            Don't Have an account yet then Sign-Up.
                                         </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-12" [hidden]="!serverOffline">
-                                                <div class="alert alert-danger big err">
-                                                   We are Sorry! Server Seems to be offline!
-                                                </div>
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12" [hidden]="!serverOffline">
+                                        <div class="alert alert-danger big err">
+                                           We are Sorry! Server Seems to be offline!
                                         </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-6">
-                                                <button class="btn btn-success btn-block" [disabled]="!f.valid" (click)="Login()">Login</button>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </form>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-6">
+                                        <button class="btn btn-success btn-block" [disabled]="!f.valid" (click)="Login()">Login</button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
                     </div>
                     <div id="signup_form" class="tab-pane fade">
-                        SignUp Form Goes Here!!
+                        <form #sf="ngForm" class="form-horizontal row-border" novalidate>
+                            <div class="form-group" [ngClass]="{'has-error': !Semail.valid && !Semail.pristine && Semail.touched || checking_Email_Error, 'has-success':Semail.valid && !checking_Email_Error}">
+                                <label class="col-sm-3 control-label big">Name </label>
+                                <div class="col-sm-8">
+                                    <input #Semail="ngModel" name="Semail" (keyup)="CheckEmail($event.target.value)" [(ngModel)]="userSignup.local.email" type="text" placeholder="Enter Your Email" class="form-control big" required minlength="5">
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Semail.valid && !Semail.pristine && !checking_Email, 'fa-times':!Semail.valid && !Semail.pristine}"></i></p>
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-spinner fa-spin': checking_Email, 'fa-times fa-spin':checking_Email_Error}"></i></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger big err" [hidden]="Semail.valid || (Semail.pristine)">
+                                        Invalid Email Id!
+                                    </div>
+                                    <div class="alert alert-danger big err" [hidden]="!checking_Email_Error">
+                                        This EmailId is Already Registered!
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': !Spass.valid && !Spass.pristine && Spass.touched, 'has-success':Spass.valid}">
+                                <label class="col-sm-3 control-label big">Password </label>
+                                <div class="col-sm-8">
+                                    <input #Spass="ngModel" name="Spass" [(ngModel)]="userSignup.local.password" type="password" placeholder="Enter Your Password" class="form-control big" required minlength="5">
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Spass.valid && !Spass.pristine , 'fa-times':!Spass.valid && !Spass.pristine}"></i></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger big err" [hidden]="Spass.valid || (Spass.pristine)">
+                                        Password is required (minimum 5 characters).
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': !Rpass.valid && !Rpass.pristine && Rpass.touched || (Spass.value != Rpass.value), 'has-success':Rpass.valid && (Spass.value == Rpass.value)}">
+                                <label class="col-sm-3 control-label big">Password </label>
+                                <div class="col-sm-8">
+                                    <input #Rpass="ngModel" name="Rpass" [(ngModel)]="temp" type="password" placeholder="Retype your Password" class="form-control big" required minlength="5">
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Rpass.valid && !Rpass.pristine && Spass.value == Rpass.value, 'fa-times':!Rpass.valid && !Rpass.pristine || Spass.value != Rpass.value}"></i></p>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger big err" [hidden]="Rpass.valid || (Rpass.pristine)">
+                                       Password Must be more than 5 characters!
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger big err" [hidden]="Spass.value == Rpass.value">
+                                        Both passwords should match!.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': !FName.valid && !FName.pristine && FName.touched, 'has-success':FName.valid}">
+                                <label class="col-sm-3 control-label big">First Name </label>
+                                <div class="col-sm-8">
+                                    <input #FName="ngModel" name="FName" [(ngModel)]="userSignup.otherDetails.fname" type="text" placeholder="Enter First Name" class="form-control big" required>
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': FName.valid && !FName.pristine , 'fa-times':!FName.valid && !FName.pristine}"></i></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger big err" [hidden]="FName.valid || (FName.pristine)">
+                                        First Name is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': !LName.valid && !LName.pristine && LName.touched, 'has-success':LName.valid}">
+                                <label class="col-sm-3 control-label big">Last Name </label>
+                                <div class="col-sm-8">
+                                    <input #LName="ngModel" name="LName" [(ngModel)]="userSignup.otherDetails.lname" type="text" placeholder="Enter Last Name" class="form-control big" required>
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': LName.valid && !LName.pristine , 'fa-times':!LName.valid && !LName.pristine}"></i></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger big err" [hidden]="LName.valid || (LName.pristine)">
+                                        Last Name is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" [ngClass]="{'has-error': !Phone.valid && !LName.pristine && LName.touched, 'has-success':Phone.valid}">
+                                <label class="col-sm-3 control-label big">Phone Number </label>
+                                <div class="col-sm-8">
+                                    <input #Phone="ngModel" name="Phone" [(ngModel)]="userSignup.otherDetails.phone" type="number" placeholder="Enter Phone Number" class="form-control big" required>
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Phone.valid && !Phone.pristine , 'fa-times':!Phone.valid && !Phone.pristine}"></i></p>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger big err" [hidden]="Phone.valid || (Phone.pristine)">
+                                        Phone Number is required.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12" [hidden]="!incorrectSignup">
+                                    <div class="alert alert-danger big err">
+                                        Something went wrong! Please Try Again!
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12" [hidden]="!serverOffline">
+                                    <div class="alert alert-danger big err">
+                                        We are Sorry! Server Seems to be offline!
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <button class="btn btn-success btn-block" [disabled]="!sf.valid || Spass.value != Rpass.value" (click)="Signup()">Sign-Up</button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

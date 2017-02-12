@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import "../rxjs.operators";
 import {Http} from "@angular/http";
 import {Settings} from "../settings";
-import {UserLogin} from "./user.modal";
+import {UserLogin, UserSignup} from "./user.modal";
 import {Observable} from "rxjs/Observable";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
 @Injectable()
@@ -16,4 +16,13 @@ export class UserService {
             .map(res => res.json())
     }
 
+    signup(user : UserSignup): Observable<GeneralResponseModal>{
+        return this._http.post(this._baseUrl+"/signup",user)
+            .map(res => res.json())
+    }
+
+    checkUser(email : String): Observable<GeneralResponseModal>{
+        return this._http.get(this._baseUrl+"/checkUser/"+email)
+            .map(res => res.json())
+    }
 }

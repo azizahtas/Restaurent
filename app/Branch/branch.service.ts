@@ -4,6 +4,7 @@ import {Settings} from "../settings";
 import "../rxjs.operators";
 import {Http} from "@angular/http";
 import {Branch, TableModal} from "./branch.modal";
+import {Booking} from "../Booking/booking.modal";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
 import {Observable} from "rxjs/Observable";
 import {AuthHttp} from "angular2-jwt";
@@ -56,5 +57,11 @@ export class BranchService{
         return this._authHttp.delete(this._baseUrl+'/u/Table/'+branch_Id+'/'+table_Id)
             .map(res => res.json())
     }
+
+    addBooking(booking:Booking): Observable<GeneralResponseModal>{
+        return this._authHttp.post(this._baseUrl+'/Booking/',booking)
+            .map(res => res.json())
+    }
+
 
 }

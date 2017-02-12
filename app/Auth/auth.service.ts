@@ -5,7 +5,15 @@ import {tokenNotExpired, JwtHelper} from "angular2-jwt";
 export class Auth{
     jwtHelper: JwtHelper = new JwtHelper();
     loggedIn() {
-        return localStorage.getItem('token') != null;
+        if(localStorage.getItem('token') != null){
+            var decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
+            if(decodedToken.who && decodedToken._id!=null || decodedToken._id!=""){
+                return true;
+            }
+        }
+        else{
+            return false;
+        }
     }
     isAdmin(){
         if(this.loggedIn()){
@@ -16,5 +24,15 @@ export class Auth{
     }
     public Logout(){
         localStorage.removeItem('token');
+    }
+
+    public getId():string{
+        if(this.loggedIn()){
+            var decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
+            return decodedToken._id;
+        }
+        else{
+            return null;
+        }
     }
 }

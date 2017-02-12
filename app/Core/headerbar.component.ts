@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Auth} from "../Auth/auth.service";
-import {UserLogin} from "../User/user.modal";
+import {UserLogin, UserSignup} from "../User/user.modal";
 import {UserService} from "../User/user.service";
 @Component({
     selector : 'headerbar',
@@ -10,9 +10,15 @@ export class HeaderBarComponent{
     constructor(public _auth:Auth, public _user:UserService){}
 
     user : UserLogin = new UserLogin();
+    userSignup : UserSignup = new UserSignup();
+    temp :string = "";
 
     incorrect : boolean = false;
+    incorrectSignup : boolean = false;
     serverOffline : boolean = false;
+
+    checking_Email : boolean = false;
+    checking_Email_Error : boolean = false;
 
     public Login(){
         var newUser = new UserLogin();
@@ -37,4 +43,43 @@ export class HeaderBarComponent{
                 ()=> {}
             )
     }
+    public Signup(){
+        var newuser = new UserSignup();
+        newuser.local.email = this.userSignup.local.email;
+        newuser.local.password = this.userSignup.local.password;
+        newuser.otherDetails.fname= this.userSignup.otherDetails.fname;
+        newuser.otherDetails.lname= this.userSignup.otherDetails.lname;
+        newuser.otherDetails.phone= this.userSignup.otherDetails.phone;
+        newuser.otherDetails.who= this.userSignup.otherDetails.who;
+        this._user.signup(newuser)
+            .subscribe(
+                data => {
+                    this.serverOffline = false;
+                    if(data.success){
+                        this.incorrectSignup = false;
+                        var token = data.data;
+                        localStorage.setItem('token', token);
+                    }
+                    else if(!data.success){
+                        this.incorrectSignup = true;
+                    }
+                },
+                err => {
+                    this.serverOffline = true; 
+                },
+                () => {}
+            )
+    }
+    public CheckEmail(email : String){
+        this.checking_Email = true;
+        this.serverOffline = false;
+        this._user.checkUser(email)
+            .subscribe(
+                data =>{
+                    this.checking_Email_Error = data.success;
+                },
+                err =>{this.serverOffline = true;},()=>{this.checking_Email = false;}
+            )
+    }
+
 }

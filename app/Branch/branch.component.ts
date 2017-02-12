@@ -5,6 +5,10 @@ import {BranchService} from "./branch.service";
 import {Category} from "../Category/category.modal";
 import * as _ from "lodash"
 import {Auth} from "../Auth/auth.service";
+import {UserService} from "../User/user.service";
+import {UserSignup} from "../User/user.modal";
+import {Booking} from "../Booking/booking.modal";
+import {CalendarModule} from 'primeng/primeng';
 
 @Component({
     templateUrl: 'app/Branch/branch.component.html',
@@ -26,7 +30,7 @@ padding: 5px;
 `]
 })
 export class BranchComponent {
-    constructor(private _bran:BranchService, public _auth:Auth){}
+    constructor(private _bran:BranchService, public _auth:Auth, public _user:UserService){}
 
     BranchAdd : Branch;
     BranchEdit : Branch;
@@ -37,6 +41,8 @@ export class BranchComponent {
     TableDelete:TableModal;
     selectedTable:TableModal;
     searchModal:BranchSearchModel;
+    userSignup : UserSignup = new UserSignup();
+    Booking : Booking;
 
     lastTableNo:number = 0;
 
@@ -44,10 +50,18 @@ export class BranchComponent {
     searchedBranches : Branch[];
     messages : Message[];
 
+    incorrect : boolean = false;
+    incorrectSignup : boolean = false;
+    serverOffline : boolean = false;
+
     checking_Name : boolean = false;
     checking_Name_Error : boolean = false;
     view_Details:boolean = false;
     checking_TNo_Error : boolean = false;
+    checking_Email : boolean = false;
+    checking_Email_Error : boolean = false;
+
+    public temp : string = "";
 
     ngOnInit(){
         this.BranchAdd = new Branch();
@@ -59,6 +73,7 @@ export class BranchComponent {
         this.TableAdd=new TableModal();
         this.TableEdit=new TableModal();
         this.TableDelete = new TableModal();
+        this.Booking = new Booking();
         this.getAllBranches();
     }
     ViewDetails(branch:Branch){
@@ -85,7 +100,8 @@ export class BranchComponent {
         this.BranchDelete._id = branch._id;
         this.BranchDelete.Name = branch.Name;
     }
-    public CheckName(name:string){
+
+public CheckName(name:string){
         this.checking_Name = false;
         this.checking_Name_Error = false;
         this._bran.checkName(name)
@@ -244,6 +260,94 @@ public DeleteTable(id:string){
                 err =>{},
                 ()=>{}
             )
+}
+
+    public selectTable(table : TableModal){
+        this.Booking = new Booking();
+        this.selectedTable = table;
+        this.Booking._TableId = this.selectedTable._id;
+        this.Booking.TNo = this.selectedTable.TNo;
+        this.Booking._BranchId = this.BranchView._id;
+        if(this._auth.loggedIn()){
+            this.Booking._UserId = this._auth.getId();
+        }
+    }
+    public CheckEmail(email : String){
+        this.checking_Email = true;
+        this.serverOffline = false;
+        this._user.checkUser(email)
+            .subscribe(
+                data =>{
+                    this.checking_Email_Error = data.success;
+                },
+                err =>{this.serverOffline = true;},()=>{this.checking_Email = false;}
+            )
+    }
+    public BookTable(Signup:boolean){
+        this.messages = [];
+        if(Signup){
+        var newuser = new UserSignup();
+        newuser.local.email = this.userSignup.local.email;
+        newuser.local.password = this.userSignup.local.password;
+        newuser.otherDetails.fname= this.userSignup.otherDetails.fname;
+        newuser.otherDetails.lname= this.userSignup.otherDetails.lname;
+        newuser.otherDetails.phone= this.userSignup.otherDetails.phone;
+        newuser.otherDetails.who= this.userSignup.otherDetails.who;
+            this._user.signup(newuser)
+            .subscribe(
+                data=>{ 
+                    this.serverOffline = false;
+                    if(data.success){
+                         this.messages.push({type:'success',title:'Signup Successful!!',message:'Welcome '+newuser.otherDetails.fname+' '+newuser.otherDetails.lname});
+                        this.incorrectSignup = false;
+                        var token = data.data;
+                        localStorage.setItem('token', token);
+                        this.Booking._UserId = this._auth.getId();
+                        this._bran.addBooking(this.Booking)
+                        .subscribe(
+                            data=>{
+                                if(data.success){
+                                     this.messages.push({type:'success',title:'Your Table is Booked!',message:'Table Booked At Date : '+this.Booking.Date+' Time : '+this.Booking.Time+' For '+this.Booking.NoOfPersons+' Persons!'});    
+                                }
+                                else{
+                                    this.messages.push({type:'danger',title:'Try Booking Again! Sorry We Couldnt Book Your Table!',message:'Error : '+data.msg});
+                                }
+                            },
+                            err=>{
+                                 this.messages.push({type:'danger',title:'Try Booking Again! Sorry We Couldnt Book Your Table!',message:'Server Buisy!'});
+                            },
+                            ()=>{}
+                        )
+                    }
+                    else if(!data.success){
+                        this.incorrectSignup = true;
+                         this.messages.push({type:'danger',title:'Something Went Wrong!',message:'Error : '+data.msg});
+                    }
+                },
+                err =>{
+                  this.serverOffline = true;   
+                   this.messages.push({type:'danger',title:'Try Again! Sorry We Couldnt Sign you up!!',message:'Server Seems Buisy!'});
+                },
+                () => {}
+            )
+        }
+        else{
+             this._bran.addBooking(this.Booking)
+                        .subscribe(
+                            data=>{
+                                if(data.success){
+                                     this.messages.push({type:'success',title:'Your Table is Booked!',message:'Table Booked At Date : '+this.Booking.Date+' Time : '+this.Booking.Time+' For '+this.Booking.NoOfPersons+' Persons!'});    
+                                }
+                                else{
+                                    this.messages.push({type:'danger',title:'Try Booking Again! Sorry We Couldnt Book Your Table!',message:'Error : '+data.msg});
+                                }
+                            },
+                            err=>{
+                                 this.messages.push({type:'danger',title:'Try Booking Again! Sorry We Couldnt Book Your Table!',message:'Server Buisy!'});
+                            },
+                            ()=>{}
+                        )
+        }
     }
 
     BackToSearch(){
@@ -265,7 +369,7 @@ public DeleteTable(id:string){
             });
             this.searchedBranches = [];
             this.searchedBranches = SrchItms;
-            console.log("exp is "+exp);
+            
             //this.setPages(this.searchdItems);
         }
         else if(exp==""){

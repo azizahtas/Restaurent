@@ -40,7 +40,7 @@
         </div>
     </div>
     <div class="row" *ngIf="!view_Details">
-        <div class="col-md-3" *ngFor="let branch of searchedBranches">
+        <div class="col-md-4" *ngFor="let branch of searchedBranches">
             <div class="caption-style">
                 <div>
                     <img alt="300x200" data-src="" style="width: 350px; height: 300px;" [src]="branch.Img_Url">
@@ -72,7 +72,13 @@
                                 <br>
                                 <h1 style="text-align: center"><u>{{BranchView.Name}}</u></h1>
                             </div>
-                            <div class="col-md-1"><h2>Tables</h2></div>
+                            <div *ngIf="BranchView.Tables.length>0" class="col-md-1"><h2>Tables</h2></div>
+                            <div *ngIf="BranchView.Tables.length<=0" class="col-md-12">
+                                <div class="alert alert-danger">
+                                    <h2>No tables Added Yet!</h2>
+                                </div>
+                            </div>
+
                             <div class="col-md-offset-9">
                                 <a class="btn btn-info" (click)="BackToSearch()">
                                     <i class="fa fa-2x fa-arrow-left"></i><span style="font-size: 24px"></span></a>
@@ -80,7 +86,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3" *ngFor="let table of BranchView.Tables">
+                            <div class="col-md-4" *ngFor="let table of BranchView.Tables">
                                 <div class="caption-style">
                                     <div>
                                         <img alt="150x200" data-src="" style="width: 200px; height: 200px;" [src]="table.Img_Url">
@@ -88,10 +94,12 @@
                                             <a *ngIf="_auth.isAdmin()" style="float: left; padding-left: 15px" class="btn btn-danger" data-target="#DeleteTableConfirm" data-toggle="modal" (click)="deleteTable(table)"><i class="fa fa-times fa-2x"></i></a>
                                             <a *ngIf="_auth.isAdmin()" class="btn btn-info" data-target="#EditTable" data-toggle="modal" (click)="editTable(table)"><i class="fa fa-edit fa-2x"></i></a>
                                             <div class="blur" style="width: 200px;height: 150px"></div>
-                                            <div class="caption-text" style="width: 200px;height: 200px">
-                                                <h2>Table No : {{table.TNo}}</h2>
-                                                <h1>Capacity : {{table.Cap}}</h1>
-                                            </div>
+                                            <a data-target="#BookTable" data-toggle="modal" (click)="selectTable(table)">
+                                                <div class="caption-text" style="width: 200px;height: 200px">
+                                                    <h2>Table No : {{table.TNo}}</h2>
+                                                    <h1>Capacity : {{table.Cap}}</h1>
+                                                </div>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +154,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group" [ngClass]="{'has-error': !adds.valid && !adds.pristine, 'has-success':adds.valid}">
+                        <div class="form-group" [ngClass]="{'has-error': !adds.valid && !adds.prestine, 'has-success':adds.valid}">
                             <label class="col-sm-3 control-label big">Address </label>
                             <div class="col-sm-8">
                                 <textarea #adds="ngModel" name="adds" style="height: 160px !important;" [(ngModel)]="BranchAdd.Address" placeholder="Enter Address Of This Branch!" class="form-control big" required minlength="20"></textarea>
@@ -430,6 +438,155 @@
                         <a class="btn btn-success btn-block" data-dismiss="modal">No!</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BookTable" tabindex="-1" role="dialog" aria-labelledby="BookTableModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h2 style="text-align: center" class="modal-title" id="BookTableModalLabel">Book Table No : {{selectedTable?.TNo}}</h2>
+            </div>
+            <div class="modal-body">
+                <form #sf="ngForm" class="form-horizontal row-border" novalidate>
+                    <div *ngIf="!_auth.loggedIn()" class="form-group" [ngClass]="{'has-error': !BSemail.valid && !BSemail.pristine && BSemail.touched || checking_Email_Error, 'has-success':BSemail.valid && !checking_Email_Error}">
+                        <label class="col-sm-3 control-label big">Name </label>
+                        <div class="col-sm-8">
+                            <input name="BSemail" [(ngModel)]="userSignup.local.email" #BSemail="ngModel" (keyup)="CheckEmail($event.target.value)" type="text" placeholder="Enter Your Email" class="form-control big" required minlength="5">
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': BSemail.valid && !BSemail.prestine && !checking_Email, 'fa-times':!BSemail.valid && !BSemail.pristine}"></i></p>
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-spinner fa-spin': checking_Email, 'fa-times fa-spin':checking_Email_Error}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="BSemail.valid || (BSemail.pristine)">
+                                Invalid Email Id!
+                            </div>
+                            <div class="alert alert-danger big err" [hidden]="!checking_Email_Error">
+                                This EmailId is Already Registered!
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!_auth.loggedIn()" class="form-group" [ngClass]="{'has-error': !BSpass.valid && !BSpass.pristine && BSpass.touched, 'has-success':BSpass.valid}">
+                        <label class="col-sm-3 control-label big">Password </label>
+                        <div class="col-sm-8">
+                            <input #BSpass="ngModel" name="BSpass" [(ngModel)]="userSignup.local.password" type="password" placeholder="Enter Your Password" class="form-control big" required minlength="5">
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': BSpass.valid && !BSpass.pristine , 'fa-times':!BSpass.valid && !BSpass.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="BSpass.valid || (BSpass.pristine)">
+                                Password is required (minimum 5 characters).
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!_auth.loggedIn()" class="form-group" [ngClass]="{'has-error': !BRpass.valid && !BRpass.pristine && BRpass.touched && (BRpass.value != BSpass?.value), 'has-success':BRpass.valid && (BRpass.value == BSpass?.value)}">
+                        <label class="col-sm-3 control-label big">RePassword </label>
+                        <div class="col-sm-8">
+                            <input #BRpass="ngModel" name="BRpass" [(ngModel)]="temp" type="password" placeholder="Retype your Password" class="form-control big" required minlength="5">
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': BRpass.valid && !BRpass.pristine && BRpass.touched && (BRpass.value == BSpass?.value), 'fa-times':!BRpass.valid && !BRpass.pristine && (BRpass.value != BSpass?.value)}"></i></p>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="alert alert-danger big err" [hidden]="BRpass.valid || (BRpass.pristine)">
+                                Password Must be more than 5 characters!
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="alert alert-danger big err" [hidden]="(BRpass.value != BSpass?.value)">
+                                Passwords Must Match!
+                            </div>
+                        </div>
+
+                    </div>
+                    <div *ngIf="!_auth.loggedIn()" class="form-group" [ngClass]="{'has-error': !FName.valid && !FName.pristine && FName.touched, 'has-success':FName.valid}">
+                        <label class="col-sm-3 control-label big">First Name </label>
+                        <div class="col-sm-8">
+                            <input #FName="ngModel" name="FName" [(ngModel)]="userSignup.otherDetails.fname" type="text" placeholder="Enter First Name" class="form-control big" required>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': FName.valid && !FName.pristine , 'fa-times':!FName.valid && !FName.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="FName.valid || (FName.pristine)">
+                                First Name is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!_auth.loggedIn()" class="form-group" [ngClass]="{'has-error': !LName.valid && !LName.pristine && LName.touched, 'has-success':LName.valid}">
+                        <label class="col-sm-3 control-label big">Last Name </label>
+                        <div class="col-sm-8">
+                            <input #LName="ngModel" name="LName" [(ngModel)]="userSignup.otherDetails.lname" type="text" placeholder="Enter Last Name" class="form-control big" required>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': LName.valid && !LName.pristine , 'fa-times':!LName.valid && !LName.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="LName.valid || (LName.pristine)">
+                                Last Name is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'has-error': !Phone.valid && !Phone.pristine && Phone.touched, 'has-success':Phone.valid}">
+                        <label class="col-sm-3 control-label big">Phone Number </label>
+                        <div class="col-sm-8">
+                            <input #Phone="ngModel" name="Phone" [(ngModel)]="userSignup.otherDetails.phone" type="number" placeholder="Enter Phone Number" class="form-control big" required>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Phone.valid && !Phone.pristine , 'fa-times':!Phone.valid && !Phone.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="Phone.valid || (Phone.pristine)" >
+                                Phone Number is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'has-error': !Phone.valid && !Phone.pristine && Phone.touched, 'has-success':Phone.valid}">
+                        <label class="col-sm-3 control-label big">Phone Number </label>
+                        <div class="col-sm-8">
+                          <p-calendar [(ngModel)]="Booking.Date" dateFormat="dd.mm.yy" #Date="ngModel" name="Date"></p-calendar>
+                        </div>
+                        <div class="col-md-1">
+                            <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Phone.valid && !Phone.pristine , 'fa-times':!Phone.valid && !Phone.pristine}"></i></p>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger big err" [hidden]="Phone.valid || (Phone.pristine) || (BRpass?.value != BSpass?.value)">
+                                Phone Number is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12" [hidden]="!incorrectSignup">
+                            <div class="alert alert-danger big err">
+                                Something went wrong! Please Try Again!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12" [hidden]="!serverOffline">
+                            <div class="alert alert-danger big err">
+                                We are Sorry! Server Seems to be offline!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6" *ngIf="_auth.loggedIn()">
+                            <button  class="btn btn-success btn-block" [disabled]="!sf.valid" (click)="BookTable(false)">Book Table</button>
+                        </div>
+                        <div class="col-sm-6" *ngIf="!_auth.loggedIn()">
+                            <button  class="btn btn-success btn-block" [disabled]="!sf.valid || (BRpass?.value != BSpass?.value)" (click)="BookTable(true)">Sign-Up & Book</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
