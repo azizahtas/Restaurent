@@ -315,7 +315,6 @@ export class BranchComponent {
             newuser.otherDetails.fname = this.userSignup.otherDetails.fname;
             newuser.otherDetails.lname = this.userSignup.otherDetails.lname;
             newuser.otherDetails.phone = this.userSignup.otherDetails.phone;
-            newuser.otherDetails.who = this.userSignup.otherDetails.who;
             this._user.signup(newuser)
                 .subscribe(
                 data => {
