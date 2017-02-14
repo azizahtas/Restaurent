@@ -14,6 +14,10 @@ const bookingRoutes: Routes = [
     { path: 'Booking', loadChildren: 'app/Booking/booking.module#BookingModule' },
 ];
 
+const userRoutes: Routes = [
+    { path: 'User', loadChildren: 'app/User/user.module#UserModule' },
+];
+
 const dashboardRoutes: Routes = [
     { path: 'DashboardCenter', loadChildren: 'app/Dashboard/dashboard.module#DashboardModule' },
     { path: '', redirectTo: "/DashboardCenter", pathMatch: 'full' }

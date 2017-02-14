@@ -9,10 +9,10 @@ export class AuthGuard implements CanActivate {
     constructor(private auth: Auth, private router: Router) {}
 
     canActivate() {
-        if(this.auth.loggedIn()) {
+        if(this.auth.isAdmin()) {
             return true;
         } else {
-            console.log("Duhhh Your Not Authorized");
+            console.log("Duhhh Your Not Admin");
             return false;
         }
     }

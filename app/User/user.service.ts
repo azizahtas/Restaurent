@@ -5,9 +5,10 @@ import {Settings} from "../settings";
 import {UserLogin, UserSignup} from "./user.modal";
 import {Observable} from "rxjs/Observable";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
+import {AuthHttp} from "angular2-jwt";
 @Injectable()
 export class UserService {
-    constructor(private _http:Http) {
+    constructor(private _http:Http,private _authHttp: AuthHttp) {
     }
     private _baseUrl = "http://" + Settings.serverHost + ":" + Settings.serverPort + "/api/user";
 
@@ -23,6 +24,11 @@ export class UserService {
 
     checkUser(email : String): Observable<GeneralResponseModal>{
         return this._http.get(this._baseUrl+"/checkUser/"+email)
+            .map(res => res.json())
+    }
+
+    getAllUsers(querry?): Observable<GeneralResponseModal> {
+        return this._authHttp.get(this._baseUrl + "/")
             .map(res => res.json())
     }
 }

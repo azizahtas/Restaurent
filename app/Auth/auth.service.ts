@@ -22,6 +22,13 @@ export class Auth{
         }
         else return false;
     }
+    isManager(){
+        if(this.loggedIn()){
+            var decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
+            return decodedToken.bm;
+        }
+        else return false;
+    }
     public Logout(){
         localStorage.removeItem('token');
     }
@@ -30,6 +37,15 @@ export class Auth{
         if(this.loggedIn()){
             var decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
             return decodedToken._id;
+        }
+        else{
+            return null;
+        }
+    }
+    public getBranchId():string{
+        if(this.loggedIn()){
+            var decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
+            return decodedToken._branchId;
         }
         else{
             return null;

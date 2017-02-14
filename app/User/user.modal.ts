@@ -4,18 +4,18 @@
  God bless that guy who would really stare at you intentionaly
 * */
 export class UserLogin {
-     email : String;
-     password : String;
+     email : string;
+     password : string;
  constructor(){
      this.email = "";
      this.password = "";
  }
 }
 export class UserLoginFacebook{
-     id : String ;
-     email : String;
-     token : String;
-     name : String;
+     id : string ;
+     email : string;
+     token : string;
+     name : string;
  constructor(){
      this.id = "";
      this.email = "";
@@ -24,10 +24,10 @@ export class UserLoginFacebook{
  }
 }
 export class UserLoginTwitter{
-     id : String ;
-     email : String;
-     token : String;
-     name : String;
+     id : string ;
+     email : string;
+     token : string;
+     name : string;
  constructor(){
      this.id = "";
      this.email = "";
@@ -36,10 +36,10 @@ export class UserLoginTwitter{
  }
 }
 export class UserLoginGoogle{
-     id : String ;
-     email : String;
-     token : String;
-     name : String;
+     id : string ;
+     email : string;
+     token : string;
+     name : string;
  constructor(){
      this.id = "";
      this.email = "";
@@ -49,7 +49,7 @@ export class UserLoginGoogle{
 }
 
 export class UserSignup{
-    _id: String;
+    _id: string;
     local : UserLogin;
     facebook :UserLoginFacebook;
     twitter : UserLoginTwitter;
@@ -65,12 +65,12 @@ export class UserSignup{
 }
 
 export class OtherDetails{
-    who : Boolean;
-    bm : Boolean;
-    fname : String;
-    lname : String;
-    phone : String;
-    _branchId : String;
+    who : boolean;
+    bm : boolean;
+    fname : string;
+    lname : string;
+    phone : string;
+    _branchId : string;
     constructor(){
         this.who = false;
         this.bm = false;
@@ -79,5 +79,10 @@ export class OtherDetails{
         this.phone = "";
         this._branchId = "";
     }
+}
+
+export class UserSearchModal{
+    FName : string;
+    LName : string;
 }
 
