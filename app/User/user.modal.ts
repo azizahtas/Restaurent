@@ -81,6 +81,25 @@ export class OtherDetails{
     }
 }
 
+export class UserViewModal{
+    _Id : string;
+    who : boolean;
+    bm : boolean;
+    fname : string;
+    lname : string;
+    phone : string;
+    _branchId : string;
+    constructor(){
+        this._Id = "";
+        this.who = false;
+        this.bm = false;
+        this.fname = "";
+        this.lname = "";
+        this.phone = "";
+        this._branchId = "";
+    }
+}
+
 export class UserSearchModal{
     FName : string;
     LName : string;

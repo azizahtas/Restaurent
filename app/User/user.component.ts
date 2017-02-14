@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Auth } from '../Auth/auth.service';
 import { UserService } from './user.service';
 import { BranchService } from '../Branch/branch.service';
-import { UserSignup, UserSearchModal, OtherDetails } from './user.modal';
+import { UserSignup, UserSearchModal, OtherDetails , UserViewModal} from './user.modal';
 import { Message } from '../Shared/Message.modal';
 import { Branch } from '../Branch/branch.modal';
 @Component({
@@ -13,14 +13,15 @@ export class UserComponent {
     constructor(private _auth: Auth, private _user: UserService,
     private _bran:BranchService) { }
 
-    Users: OtherDetails[];
-    SearchedUsers: OtherDetails[];
+    Users: UserViewModal[];
+    SearchedUsers: UserViewModal[];
     messages: Message[];
     Branches:Branch[];
 
     user_search: UserSearchModal;
     manager : UserSignup;
-    managerEdit : UserSignup;
+    userEdit : UserViewModal;
+    userDelete : UserViewModal;
 
     serverOffline: boolean = false;
     checking_Email: boolean = false;
@@ -36,10 +37,21 @@ export class UserComponent {
 
         this.user_search = new UserSearchModal();
         this.manager = new UserSignup();
-        this.managerEdit = new UserSignup();
+        this.userEdit = new UserViewModal();
+        this.userDelete = new UserViewModal();
+
 
         this.getAllUsers();
         this.getAllBranches();
+    }
+
+    public EditUser(user:UserViewModal){
+        this.userEdit = user;
+    }
+
+    public S(user : UserViewModal){
+        this.userDelete = user;
+        console.log(this.userDelete);
     }
 
     public CheckEmail(email: String) {
@@ -96,8 +108,19 @@ export class UserComponent {
             data => {
                 this.serverOffline = false;
                 if (data.success) {
-                    this.Users = data.data;
-                    this.SearchedUsers = data.data;
+                    this.Users = [];
+                    for(var i = 0; i<data.data.Users.length; i++){
+                        var newUser = new UserViewModal();
+                        newUser._Id = data.data.Ids[i];
+                        newUser._branchId = data.data.Users[i]._branchId;
+                        newUser.bm = data.data.Users[i].bm;
+                        newUser.who = data.data.Users[i].who;
+                        newUser.fname = data.data.Users[i].fname;
+                        newUser.lname = data.data.Users[i].lname;
+                        newUser.phone = data.data.Users[i].phone;
+                        this.Users.push(newUser);    
+                    }
+                    this.SearchedUsers = this.Users;
                 }
                 else {
                     this.messages.push({ type: 'danger', title: 'Something Went Wrong! Try Again', message: data.msg});
