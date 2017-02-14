@@ -19,7 +19,7 @@ export class UserComponent {
     Branches:Branch[];
 
     user_search: UserSearchModal;
-    manager : UserSignup;
+    userAdd : UserSignup;
     userEdit : UserViewModal;
     userDelete : UserViewModal;
 
@@ -27,6 +27,9 @@ export class UserComponent {
     checking_Email: boolean = false;
     checking_Email_Error: boolean = false;
     incorrectSignup: boolean = false;
+
+    userCount: number = 0;
+    managerCount: number = 0;
     
 
     ngOnInit() {
@@ -36,7 +39,7 @@ export class UserComponent {
         this.Branches = [];
 
         this.user_search = new UserSearchModal();
-        this.manager = new UserSignup();
+        this.userAdd = new UserSignup();
         this.userEdit = new UserViewModal();
         this.userDelete = new UserViewModal();
 
@@ -49,9 +52,8 @@ export class UserComponent {
         this.userEdit = user;
     }
 
-    public S(user : UserViewModal){
+    public DeleteUser(user : UserViewModal){
         this.userDelete = user;
-        console.log(this.userDelete);
     }
 
     public CheckEmail(email: String) {
@@ -70,14 +72,17 @@ export class UserComponent {
         this.messages = [];
         if (!Edit) {
             var newuser = new UserSignup();
-            newuser.local.email = this.manager.local.email;
-            newuser.local.password = this.manager.local.password;
-            newuser.otherDetails.fname = this.manager.otherDetails.fname;
-            newuser.otherDetails.lname = this.manager.otherDetails.lname;
-            newuser.otherDetails.phone = this.manager.otherDetails.phone;
-            newuser.otherDetails._branchId = this.manager.otherDetails._branchId;
+            newuser.local.email = this.userAdd.local.email;
+            newuser.local.password = this.userAdd.local.password;
+            newuser.otherDetails.fname = this.userAdd.otherDetails.fname;
+            newuser.otherDetails.lname = this.userAdd.otherDetails.lname;
+            newuser.otherDetails.phone = this.userAdd.otherDetails.phone;
+            newuser.otherDetails._branchId = this.userAdd.otherDetails._branchId;
             newuser.otherDetails.bm = true;
-
+            console.log("New User :");
+            console.log(newuser);
+            console.log("Manager :");
+            console.log(this.userAdd);
             this._user.signup(newuser)
                 .subscribe(
                 data => {
@@ -98,9 +103,98 @@ export class UserComponent {
                 () => { this.getAllUsers(); }
                 )
         }
+        else{
+            var newUserEdit = new OtherDetails();
+            newUserEdit.fname = this.userEdit.fname;
+            newUserEdit.lname = this.userEdit.lname;
+            newUserEdit.phone = this.userEdit.phone;
+            newUserEdit._branchId = this.userEdit._branchId;
+            newUserEdit.bm = this.userEdit.bm;
+            this._user.editUser(this.userEdit._Id, newUserEdit)
+            .subscribe(
+                data =>{
+                    this.serverOffline = false;
+                    if(data.success){
+                        this.messages.push({ type: 'success', title:'User '+this.userEdit.fname+' '+this.userEdit.lname+' Saved Successfully!!', message: '' });
+                    }
+                    else{
+                   this.messages.push({ type: 'danger', title:'something Went Wrong! Please Try Again!', message: data.msg});
+                    }
+                },
+                err=>{this.serverOffline = true;
+            this.messages.push({ type: 'danger', title:'Server is Offline!', message:''});    
+            },
+                ()=> {}
+            )
+        }
     }
 
+    public Delete(){
+        this._user.deleteUser(this.userDelete._Id)
+        .subscribe(
+            data => {
+                 this.serverOffline = false;
+                if(data.success){
+                   this.messages.push({ type: 'success', title:'User '+this.userDelete.fname+' '+this.userDelete.lname+' Deleted Successfully!!', message: '' });
+                   this.getAllUsers();
+                }
+                else{
+                   this.messages.push({ type: 'danger', title:'something Went Wrong! Please Try Again!', message: data.msg});
+                }
+            },
+            err =>{
+                this.serverOffline = true;
+                this.messages.push({ type: 'danger', title:'Server is Offline!', message:''});
+            },
+            () =>{}
+        );
+    }
 
+    public updateUserCount(){
+        this.userCount =0;
+        this.managerCount =0;
+        for(var i = 0; i<this.SearchedUsers.length; i++){
+            if(this.SearchedUsers[i].bm) this.managerCount++;
+            if(!this.SearchedUsers[i].bm) this.userCount++;
+        }
+    }
+
+    public clear(){
+        this.user_search.FName = "";
+        this.user_search.LName = "";
+    }
+
+    public showAll(){
+        this.SearchedUsers = this.Users;
+    }
+
+    public Search(FName:boolean){
+        this.SearchedUsers=[];
+        if(FName){
+            let patf = new RegExp(this.user_search.FName, 'i');
+            for(var i=0;i<this.Users.length;i++){
+                if(patf.test(this.Users[i].fname)){
+                    this.SearchedUsers.push(this.Users[i]);
+                }
+            }
+        }
+        else{
+            let patl = new RegExp(this.user_search.LName, 'i');
+            for(var i=0;i<this.Users.length;i++){
+                if(patl.test(this.Users[i].lname)){
+                    this.SearchedUsers.push(this.Users[i]);
+                }
+            }
+        }
+    }
+
+    public getBranchName(Id:string):string{
+        var Name = "";
+        for(var i=0; i<this.Branches.length; i++){
+            if( this.Branches[i]._id == Id) Name = this.Branches[i].Name;
+        }
+        return Name;
+    }
 
     private getAllUsers() {
         this._user.getAllUsers()
@@ -127,7 +221,7 @@ export class UserComponent {
                 }
             },
             err => { this.serverOffline = true; },
-            () => { }
+            () => { this.updateUserCount(); }
             )
     }
 

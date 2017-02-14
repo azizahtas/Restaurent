@@ -20,16 +20,16 @@
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <input #search_fname="ngModel" name="fname" [(ngModel)]="user_search.fname" class="form-control big" type="text" placeholder="Search By First Name !!">
+                                <input #search_fname="ngModel" name="fname" [(ngModel)]="user_search.FName" class="form-control big" type="text" (keyup)='Search(true)' placeholder="Search By First Name !!">
                             </div>
                             <div class="col-md-5">
-                                <input #search_lname="ngModel" name="lname" [(ngModel)]="user_search.lname" class="form-control big" type="text" placeholder="Search By Last Name !!">
+                                <input #search_lname="ngModel" name="lname" [(ngModel)]="user_search.LName" class="form-control big" type="text" (keyup)='Search(false)' placeholder="Search By Last Name !!">
                             </div>
                             <div class="col-md-1">
-                                <a class="btn btn-info btn-panel">Search</a>
+                                <a class="btn btn-info btn-panel" (click)='showAll()'>All</a>
                             </div>
                             <div class="col-md-1">
-                                <a class="btn btn-warning btn-panel">Clear</a>
+                                <a class="btn btn-warning btn-panel" (click)=clear()>Clear</a>
                             </div>
                         </div>
 
@@ -40,8 +40,8 @@
         </div>
         <div class="col-md-12">
             <ul class="nav nav-tabs" id="myTab">
-                <li class="active"><a data-toggle="tab" href="#users">Users <span class="badge bg-danger">8</span></a></li>
-                <li class=""><a data-toggle="tab" href="#managers" *ngIf="_auth.isAdmin()">Branch Managers</a></li>
+                <li class="active"><a data-toggle="tab" href="#users">Users <span class="badge bg-danger">{{userCount}}</span></a></li>
+                <li class=""><a data-toggle="tab" href="#managers" *ngIf="_auth.isAdmin()">Branch Managers <span class="badge bg-danger">{{managerCount}}</span></a></li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div id="users" class="tab-pane fade active in">
@@ -67,7 +67,14 @@
                         <section class="panel default magenta_border vertical_border h1" *ngIf="user.bm">
                             <div class="block-web">
                                 <div class="porlets-content">
-
+                                    <div class="row">
+                                        <div class="col-md-3"><h2>{{user.fname}} {{user.lname}}</h2></div>   
+                                        <div class="col-md-3"><h2>{{user.phone}}</h2></div>   
+                                        <div class="col-md-3"><h2>{{getBranchName(user._branchId)}}</h2></div>
+                                        <div class="col-md-1"><a class="btn btn-info btn-block"><i class="fa fa-book fa-2x"></i></a></div>   
+                                        <div class="col-md-1"><a class="btn btn-success btn-block" data-target="#EditUser" data-toggle="modal" (click)="EditUser(user)"><i class="fa fa-edit fa-2x"></i></a></div>   
+                                        <div class="col-md-1"><a class="btn btn-danger btn-block" data-target="#DeleteUserConfirm" data-toggle="modal" (click)="DeleteUser(user)" ><i class="fa fa-times fa-2x"></i></a></div>   
+                                    </div>     
                                 </div>
                             </div>
                         </section>
@@ -170,7 +177,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-6">
-                            <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid" (click)="Manager(false)">Register Manager</button>
+                            <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid" (click)="Manager(true)">Save {{userEdit.bm?'Manager':'User'}}</button>
                         </div>
                         <div class="col-sm-6">
                             <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
@@ -182,20 +189,20 @@
     </div>
 </div>
 
-<div *ngIf="_auth.isAdmin()" class="modal fade" id="AddManager" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div *ngIf="_auth.isAdmin()" class="modal fade" id="AddManager" tabindex="-1" role="dialog" aria-labelledby="AddUserModallabel"
     aria-hidden="true" style="display: none">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h2 style="text-align: center" class="modal-title" id="myModalLabel">Create Manager</h2>
+                <h2 style="text-align: center" class="modal-title" id="AddUserModallabel">Create Manager</h2>
             </div>
             <div class="modal-body">
                 <form #sf="ngForm" class="form-horizontal row-border" novalidate>
                     <div class="form-group" [ngClass]="{'has-error': !BSemail.valid && !BSemail.pristine && BSemail.touched || checking_Email_Error, 'has-success':BSemail.valid && !checking_Email_Error}">
                         <label class="col-sm-3 control-label big">Email Id</label>
                         <div class="col-sm-8">
-                            <input name="BSemail" [(ngModel)]="manager.local.email" #BSemail="ngModel" (keyup)="CheckEmail($event.target.value)" type="text"
+                            <input name="BSemail" [(ngModel)]="userAdd.local.email" #BSemail="ngModel" (keyup)="CheckEmail($event.target.value)" type="text"
                                 placeholder="Enter Your Email" class="form-control big" required minlength="5">
                         </div>
                         <div class="col-md-1">
@@ -214,7 +221,7 @@
                     <div class="form-group" [ngClass]="{'has-error': !BSpass.valid && !BSpass.pristine && BSpass.touched, 'has-success':BSpass.valid}">
                         <label class="col-sm-3 control-label big">Password </label>
                         <div class="col-sm-8">
-                            <input #BSpass="ngModel" name="BSpass" [(ngModel)]="manager.local.password" type="password" placeholder="Enter Your Password"
+                            <input #BSpass="ngModel" name="BSpass" [(ngModel)]="userAdd.local.password" type="password" placeholder="Enter Your Password"
                                 class="form-control big" required minlength="5">
                         </div>
                         <div class="col-md-1">
@@ -250,7 +257,7 @@
                     <div class="form-group" [ngClass]="{'has-error': !FName.valid && !FName.pristine && FName.touched, 'has-success':FName.valid}">
                         <label class="col-sm-3 control-label big">First Name </label>
                         <div class="col-sm-8">
-                            <input #FName="ngModel" name="FName" [(ngModel)]="userEdit.fname" type="text" placeholder="Enter First Name"
+                            <input #FName="ngModel" name="FName" [(ngModel)]="userAdd.otherDetails.fname" type="text" placeholder="Enter First Name"
                                 class="form-control big" required>
                         </div>
                         <div class="col-md-1">
@@ -265,7 +272,7 @@
                     <div class="form-group" [ngClass]="{'has-error': !LName.valid && !LName.pristine && LName.touched, 'has-success':LName.valid}">
                         <label class="col-sm-3 control-label big">Last Name </label>
                         <div class="col-sm-8">
-                            <input #LName="ngModel" name="LName" [(ngModel)]="userEdit.lname" type="text" placeholder="Enter Last Name" class="form-control big"
+                            <input #LName="ngModel" name="LName" [(ngModel)]="userAdd.otherDetails.lname" type="text" placeholder="Enter Last Name" class="form-control big"
                                 required>
                         </div>
                         <div class="col-md-1">
@@ -280,7 +287,7 @@
                     <div class="form-group" [ngClass]="{'has-error': !Phone.valid && !Phone.pristine && Phone.touched, 'has-success':Phone.valid}">
                         <label class="col-sm-3 control-label big">Phone Number </label>
                         <div class="col-sm-8">
-                            <input #Phone="ngModel" name="Phone" [(ngModel)]="userEdit.phone" type="number" placeholder="Enter Phone Number"
+                            <input #Phone="ngModel" name="Phone" [(ngModel)]="userAdd.otherDetails.phone" type="number" placeholder="Enter Phone Number"
                                 class="form-control big" required>
                         </div>
                         <div class="col-md-1">
@@ -295,7 +302,7 @@
                     <div class="form-group" [ngClass]="{'has-error': !Branch.valid && !Branch.pristine && Branch.touched, 'has-success':Branch.valid}">
                         <label class="col-sm-3 control-label big">Select Branch </label>
                         <div class="col-sm-8">
-                            <select #Branch="ngModel" name="Branch" [(ngModel)]="userEdit._branchId" class="form-control big" required>
+                            <select #Branch="ngModel" name="Branch" [(ngModel)]="userAdd.otherDetails._branchId" class="form-control big" required>
                                 <option value="">Select A Branch</option>
                                 <option *ngFor="let branch of Branches" [value]='branch._id'>{{branch.Name}}</option>     
                             </select>
@@ -325,7 +332,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-6">
-                            <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid" (click)="Manager(false)">Register Manager</button>
+                            <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid || checking_Email_Error" (click)="Manager(false)">Register Manager</button>
                         </div>
                         <div class="col-sm-6">
                             <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
@@ -349,7 +356,7 @@
                 <h1>Are You Sure You Want To Delete User {{userDelete.fname}} {{userDelete.lname}}?</h1>
                 <div class="row">
                     <div class="col-md-6">
-                        <a class="btn btn-danger btn-block" data-dismiss="modal" (click)="Delete(userDelete._id)">Yes!!</a>
+                        <a class="btn btn-danger btn-block" data-dismiss="modal" (click)="Delete()">Yes!!</a>
                     </div>
                     <div class="col-md-6">
                         <a class="btn btn-success btn-block" data-dismiss="modal">No!</a>

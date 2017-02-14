@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import "../rxjs.operators";
 import {Http} from "@angular/http";
 import {Settings} from "../settings";
-import {UserLogin, UserSignup} from "./user.modal";
+import {UserLogin, UserSignup, OtherDetails} from "./user.modal";
 import {Observable} from "rxjs/Observable";
 import {GeneralResponseModal} from "../Shared/GeneralResponseModal";
 import {AuthHttp} from "angular2-jwt";
@@ -31,4 +31,16 @@ export class UserService {
         return this._authHttp.get(this._baseUrl + "/")
             .map(res => res.json())
     }
+
+    deleteUser(userId : string): Observable<GeneralResponseModal> {
+        return this._authHttp.delete(this._baseUrl + "/"+userId)
+            .map(res => res.json())
+    }
+
+    editUser(userId : string,newUser : OtherDetails): Observable<GeneralResponseModal> {
+         return this._authHttp.put(this._baseUrl + "/"+userId, newUser)
+            .map(res => res.json())
+    }
+
+
 }
