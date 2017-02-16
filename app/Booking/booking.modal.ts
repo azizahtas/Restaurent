@@ -8,6 +8,7 @@ export class Booking{
     _TimeSlotId : string;
     NoOfPersons : number;
     Orders : Order[];
+    Canceled : boolean;
 
     constructor(){
         this._UserId = "";
@@ -18,6 +19,7 @@ export class Booking{
         this._TimeSlotId = "";
         this.NoOfPersons = null;
         this.Orders = [];
+        this.Canceled = false;
     }
 }
 

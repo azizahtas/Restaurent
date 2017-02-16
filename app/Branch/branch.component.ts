@@ -9,7 +9,7 @@ import { UserService } from "../User/user.service";
 import { BookingService } from "../Booking/booking.service";
 import { UserSignup } from "../User/user.modal";
 import { TimeSlotService } from "../TimeSlot/timeslot.service";
-import { TimeSlot } from "../TimeSlot/timeslot.modal";
+import { TimeSlot, TimeSlotViewModal } from "../TimeSlot/timeslot.modal";
 import { Booking } from "../Booking/booking.modal";
 import { CalendarModule } from 'primeng/primeng';
 
@@ -56,8 +56,10 @@ export class BranchComponent {
 
     Branches: Branch[];
     TimeSlots: TimeSlot[];
+    CheckedTimeSlot: TimeSlotViewModal[];
     searchedBranches: Branch[];
     messages: Message[];
+    NonCanceledBookings: Booking[];
 
     incorrect: boolean = false;
     incorrectSignup: boolean = false;
@@ -78,12 +80,16 @@ export class BranchComponent {
     ngOnInit() {
         this.Branches = [];
         this.TimeSlots = [];
+        this.NonCanceledBookings = [];
+        this.CheckedTimeSlot = [];
+
 
         this.BranchAdd = new Branch();
         this.BranchEdit = new Branch();
         this.BranchDelete = new Branch();
         this.BranchView = new Branch();
         this.searchModal = new BranchSearchModel();
+        this.selectedTable = new TableModal();
 
         this.TableAdd = new TableModal();
         this.TableEdit = new TableModal();
@@ -98,6 +104,7 @@ export class BranchComponent {
         this.maxDate.setDate(this.minDate.getDate() + 5);
         this.getAllBranches();
         this.getAllTimeSlots();
+        this.getAllNonCanceledBookings();
     }
     ViewDetails(branch: Branch) {
         this.BranchView = branch;
@@ -294,6 +301,8 @@ export class BranchComponent {
         if (this._auth.loggedIn()) {
             this.Booking._UserId = this._auth.getId();
         }
+        this.resetCheckedTimeSlots();
+        this.getAllNonCanceledBookings();
     }
     public CheckEmail(email: String) {
         this.checking_Email = true;
@@ -373,6 +382,20 @@ export class BranchComponent {
                 )
         }
     }
+    public checkBookings() {
+        this.Booking._TimeSlotId = "";
+        for(var i=0; i<this.CheckedTimeSlot.length;i++){
+            for(var j=0;j<this.NonCanceledBookings.length;j++){
+                if(new Date(this.NonCanceledBookings[j].Date).valueOf() == new Date(this.Booking.Date).valueOf() 
+                && this.NonCanceledBookings[j]._TimeSlotId == this.CheckedTimeSlot[i]._id
+                 && this.NonCanceledBookings[j]._TableId == this.selectedTable._id
+                  && this.NonCanceledBookings[j]._BranchId == this.BranchView._id)
+                    {
+                      this.CheckedTimeSlot[i].Disabled = true;
+                    }
+            }
+        }
+    }
 
     BackToSearch() {
         this.view_Details = false;
@@ -433,10 +456,46 @@ export class BranchComponent {
             data => {
                 if (data.success) {
                     this.TimeSlots = data.data;
+                    this.CheckedTimeSlot = [];
+                    for(var i=0 ; i<  this.TimeSlots.length; i++){
+                      var newTimeSlot = new TimeSlotViewModal();
+                      newTimeSlot._id =  this.TimeSlots[i]._id;
+                      newTimeSlot.StartTime =  this.TimeSlots[i].StartTime
+                      newTimeSlot.EndTime =  this.TimeSlots[i].EndTime;
+                      this.CheckedTimeSlot.push(newTimeSlot);
+                    }
                 }
             },
             err => { },
             () => { }
             )
+    }
+    getAllNonCanceledBookings() {
+        this._book.getBookings(false)
+            .subscribe(
+            data => {
+                if (data.success) {
+                    this.NonCanceledBookings = data.data;
+                }
+            },
+            err => {
+                this.serverOffline = true;
+            },
+            () => { }
+            )
+    }
+
+    resetCheckedTimeSlots(){
+         for(var i=0; i<this.CheckedTimeSlot.length;i++){
+            this.CheckedTimeSlot[i].Disabled = false;
+        }
+    }
+
+    allSlotsBooked():boolean{
+        var booked = 0;
+        for(var i=0; i<this.CheckedTimeSlot.length;i++){
+            if(this.CheckedTimeSlot[i].Disabled == true) booked++;
+        }
+        return booked == this.CheckedTimeSlot.length
     }
 }

@@ -587,7 +587,7 @@
                                                 <label class="col-sm-3 control-label big">Select Date </label>
                                                 <div class="col-sm-8">
                                                     <p-calendar [(ngModel)]="Booking.Date" dateFormat="dd/mm/yy" [minDate]="minDate" [maxDate]="maxDate" [showIcon]="true" #Date="ngModel"
-                                                        name="Date" [defaultDate]='today'></p-calendar>
+                                                        name="Date" [defaultDate]='today' (onSelect)='checkBookings()'></p-calendar>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <p class="help-block"><i class="fa" [ngClass]="{'fa-check': Date.valid && !Date.pristine , 'fa-times':!Date.valid && !Date.pristine}"></i></p>
@@ -601,9 +601,9 @@
                                             <div class="form-group" [ngClass]="{'has-error': !Time.valid && !Time.pristine && Time.touched, 'has-success':Time.valid}">
                                                 <label class="col-sm-3 control-label big">Select Time </label>
                                                 <div class="col-sm-8">
-                                                    <select #Time="ngModel" name="Time" [(ngModel)]="Booking._TimeSlotId" class="form-control big" required>
+                                                    <select [disabled]='!Date.valid' #Time="ngModel" name="Time" [(ngModel)]="Booking._TimeSlotId" class="form-control big" required>
                                                         <option value="">Select A Time Slot</option>
-                                                        <option *ngFor="let time of TimeSlots" [value]='time._id'>{{time.StartTime}} - {{time.EndTime}}</option>     
+                                                        <option *ngFor="let time of CheckedTimeSlot" [value]='time._id' [disabled]='time.Disabled'>{{time.StartTime}} - {{time.EndTime}} <p *ngIf="time.Disabled">Booked</p></option>     
                                                     </select>
                                                 </div>
                                                 <div class="col-md-1">
@@ -615,18 +615,23 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group" [ngClass]="{'has-error': !NoOfPersons.valid && !NoOfPersons.pristine && NoOfPersons.touched, 'has-success':NoOfPersons.valid}">
+                                            <div class="form-group" [ngClass]="{'has-error': !NoOfPersons.valid && !NoOfPersons.pristine && NoOfPersons.touched || NoOfPersons.value > selectedTable.Cap, 'has-success':NoOfPersons.valid && NoOfPersons.value <= selectedTable.Cap}">
                                                 <label class="col-sm-4 control-label big">Number Of Persons </label>
                                                 <div class="col-sm-7">
                                                     <input #NoOfPersons="ngModel" name="NoOfPersons" [(ngModel)]="Booking.NoOfPersons" type="number" placeholder="Enter No Of Persons"
                                                         class="form-control big" required>
                                                 </div>
                                                 <div class="col-md-1">
-                                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': NoOfPersons.valid && !NoOfPersons.pristine , 'fa-times':!NoOfPersons.valid && !NoOfPersons.pristine}"></i></p>
+                                                    <p class="help-block"><i class="fa" [ngClass]="{'fa-check': NoOfPersons.valid && !NoOfPersons.pristine && NoOfPersons.value <= selectedTable.Cap, 'fa-times':!NoOfPersons.valid && !NoOfPersons.pristine || NoOfPersons.value > selectedTable.Cap}"></i></p>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="alert alert-danger big err" [hidden]="NoOfPersons.valid || (NoOfPersons.pristine)">
                                                         You Must Enter No Of People that Are Going to come with you!.
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="alert alert-danger big err" [hidden]="NoOfPersons.value <= selectedTable.Cap || NoOfPersons.pristine">
+                                                        No of Persons Should not be More than Seats Available on Table!
                                                     </div>
                                                 </div>
                                             </div>
@@ -647,10 +652,10 @@
                                             </div>
                                             <div class="form-group">
                                                 <div class="col-sm-6" *ngIf="_auth.loggedIn()">
-                                                    <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid" (click)="BookTable(false)">Book Table</button>
+                                                    <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid || NoOfPersons.value > selectedTable.Cap" (click)="BookTable(false)">Book Table</button>
                                                 </div>
                                                 <div class="col-sm-6" *ngIf="!_auth.loggedIn()">
-                                                    <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid || (BRpass?.value != BSpass?.value)"
+                                                    <button class="btn btn-success btn-block" data-dismiss="modal" [disabled]="!sf.valid || (BRpass?.value != BSpass?.value) || NoOfPersons.value > selectedTable.Cap"
                                                         (click)="BookTable(true)">Sign-Up & Book</button>
                                                 </div>
                                                 <div class="col-sm-6">

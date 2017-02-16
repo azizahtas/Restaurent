@@ -166,6 +166,7 @@ export class UserComponent {
 
     public showAll(){
         this.SearchedUsers = this.Users;
+        this.updateUserCount();
     }
 
     public Search(FName:boolean){
@@ -174,6 +175,7 @@ export class UserComponent {
             let patf = new RegExp(this.user_search.FName, 'i');
             for(var i=0;i<this.Users.length;i++){
                 if(patf.test(this.Users[i].fname)){
+                    console.log('FName:'+this.Users[i].fname);
                     this.SearchedUsers.push(this.Users[i]);
                 }
             }
@@ -182,10 +184,12 @@ export class UserComponent {
             let patl = new RegExp(this.user_search.LName, 'i');
             for(var i=0;i<this.Users.length;i++){
                 if(patl.test(this.Users[i].lname)){
+                    console.log('LName:'+this.user_search.LName);
                     this.SearchedUsers.push(this.Users[i]);
                 }
             }
         }
+        this.updateUserCount();
     }
 
     public getBranchName(Id:string):string{

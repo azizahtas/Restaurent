@@ -103,5 +103,9 @@ export class UserViewModal{
 export class UserSearchModal{
     FName : string;
     LName : string;
+    constructor(){
+        this.FName = "";
+        this.LName = "";
+    }
 }
 

@@ -8,3 +8,16 @@ export class TimeSlot {
         this.EndTime = "";        
     }
 }
+
+export class TimeSlotViewModal {
+    _id : string;
+    StartTime : string;
+    EndTime : string;
+    Disabled : boolean;
+
+    constructor(){
+        this.StartTime = "";
+        this.EndTime = "";     
+        this.Disabled = false;   
+    }
+}
